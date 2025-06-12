@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Customer extends Model
+{
+    public $timestamps = false;
+    protected $fillable = [
+        'name',
+        'user_id',
+        'created_at',
+        'contact_name',
+        'phone_number',
+        'email',
+        'address',
+    ];
+
+    protected static function booted()
+    {
+        static::deleting(function ($customer) {
+            if ($customer->projects()->count() > 0) {
+                throw new \Exception("Impossible de supprimer ce client car il a des projets associés.");
+            }
+        });
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+}
