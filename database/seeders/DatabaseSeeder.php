@@ -10,10 +10,40 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
+        // Insertion des statuts de projets dans project_statuses
+        DB::table('project_statuses')->insert([
+            [
+                'name' => 'prospect',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'terminé',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'annulé',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+                 [
+                'name' => 'demarré',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]);
+
         DB::table('quote_statuses')->insert([
-            ['name' => 'refusé'],
-            ['name' => 'en cours'],
+            ['name' => 'envoyée'],
             ['name' => 'accepté'],
+            ['name' => 'refusé'],
+        ]);
+
+        DB::table('invoice_statuses')->insert([
+            ['name' => 'éditée',],
+            ['name' => 'envoyée'],
+            ['name' => 'payée'],
         ]);
     }
 }

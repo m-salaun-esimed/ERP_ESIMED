@@ -8,15 +8,14 @@ use Illuminate\Support\Number;
 class Invoice extends Model
 {
     protected $fillable = [
-        'status',
-        'project_id',
+        'invoice_status_id',
+        'quote_id',
         'invoice_number',
-        'user_id',
+        'payment_type',
+        'issue_date',
+        'due_date',
+        'payment_date'
     ];
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function project()
     {
@@ -26,6 +25,16 @@ class Invoice extends Model
     public function invoiceLines()
     {
         return $this->hasMany(InvoiceLine::class);
+    }
+
+    public function quote()
+    {
+        return $this->belongsTo(Quote::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(InvoiceStatus::class, 'invoice_status_id');
     }
 
     public static function boot()

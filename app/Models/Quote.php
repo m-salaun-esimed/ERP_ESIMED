@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Number;
 
 class Quote extends Model
 {
@@ -41,5 +42,17 @@ class Quote extends Model
 
             $invoice->quote_number = 'Q-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
         });
+    }
+
+    public function getTotalCostAttribute(): float
+    {
+        return $this->quoteLines->sum(function ($line) {
+            return $line->quantity * $line->unit_price;
+        });
+    }
+
+    public function getTotalCostFormattedAttribute(): string
+    {
+        return Number::currency($this->total_cost, 'EUR');
     }
 }

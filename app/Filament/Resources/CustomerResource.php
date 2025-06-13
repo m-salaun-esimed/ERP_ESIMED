@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Database\QueryException;
 
 class CustomerResource extends Resource
 {
@@ -45,27 +48,60 @@ class CustomerResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('contact_name')->searchable(),
-                TextColumn::make('phone_number')->searchable(),
-                TextColumn::make('email')->searchable(),
-                TextColumn::make('address')->searchable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+{
+    return $table
+        ->columns([
+            TextColumn::make('name')->searchable(),
+            TextColumn::make('contact_name')->searchable(),
+            TextColumn::make('phone_number')->searchable(),
+            TextColumn::make('email')->searchable(),
+            TextColumn::make('address')->searchable(),
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+
+            DeleteAction::make()
+                ->action(function ($record) {
+                    try {
+                        $record->delete();
+                        Notification::make()
+                            ->title('Client supprimé')
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Suppression impossible')
+                            ->body($e->getMessage()) // ou message custom
+                            ->danger()
+                            ->send();
+                    }
+                }),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make()
+                    ->action(function ($records) {
+                        foreach ($records as $record) {
+                            try {
+                                $record->delete();
+                            } catch (QueryException $e) {
+                                Notification::make()
+                                    ->title('Suppression impossible')
+                                    ->body("Le client {$record->name} possède des projets associés.")
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Clients supprimés')
+                            ->success()
+                            ->send();
+                    }),
+            ]),
+        ]);
+}
 
     public static function getRelations(): array
     {

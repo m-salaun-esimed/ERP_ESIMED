@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->date('issue_date')->nullable();
             $table->date('due_date')->nullable();
-            $table->bigInteger('payment_type')->nullable();
+            $table->text('payment_type')->nullable();
             $table->date('payment_date')->nullable();
             $table->text('footer_note')->nullable();
             $table->timestamps();

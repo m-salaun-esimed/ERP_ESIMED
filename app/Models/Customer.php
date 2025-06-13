@@ -20,7 +20,7 @@ class Customer extends Model
     protected static function booted()
     {
         static::deleting(function ($customer) {
-            if ($customer->projects()->count() > 0) {
+            if ($customer->projects()->exists()) {
                 throw new \Exception("Impossible de supprimer ce client car il a des projets associés.");
             }
         });
@@ -35,4 +35,5 @@ class Customer extends Model
     {
         return $this->hasMany(Project::class);
     }
+
 }

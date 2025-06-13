@@ -17,6 +17,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Repeater;
+use App\Models\InvoiceStatus;
+use App\Models\Quote;
+use Filament\Forms\Components\DatePicker;
+use App\Filament\Resources\InvoiceResource\RelationManagers\InvoiceLinesRelationManager;
+use App\Models\QuoteLine;
+use App\Models\InvoiceLine;
+use Filament\Tables\Filters\SelectFilter;
+use App\Models\Customer;
+use App\Models\Project;
 
 class InvoiceResource extends Resource
 {
@@ -28,41 +37,41 @@ class InvoiceResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('status')
-                    ->label('Status')
-                    ->options([
-                        'éditée' => 'éditée',
-                        'envoyée' => 'envoyée',
-                        'payée' => 'payée',
-                    ])
-                    ->required()
-                    ->searchable(false)
-                    ->reactive(), 
-                Select::make('project_id')
-                    ->label('Project')
-                    ->options(function () {
-                        $user = Auth::user();
-
-                        if (!$user) {
-                            return [];
-                        }
-
-                        return $user->projects()->pluck('name', 'id')->toArray();
-                    })
-                    ->searchable()
+                Select::make('invoice_status_id')
+                    ->label('Statut facture')
+                    ->options(InvoiceStatus::all()->pluck('name', 'id'))
                     ->required(),
-                Repeater::make('invoiceLines')
-                    ->label('Lignes de facture')
-                    ->relationship()
-                    ->schema([
-                        TextInput::make('description')->required(),
-                        TextInput::make('quantity')->numeric()->required(),
-                        TextInput::make('unit_price')->numeric()->required(),
+                Select::make('quote_id')
+                    ->label('Devis')
+                    ->options(function () {
+                        return Quote::where('status_id', 2)
+                            ->whereHas('project.customer', function ($query) {
+                                $query->where('user_id', Auth::id());
+                            })
+                            ->pluck('quote_number', 'id');
+                    })
+                    ->required(),
+                Select::make('payment_type')
+                    ->Label('Payment type')
+                    ->options([
+                        'chèque' => 'Chèque',
+                        'virement' => 'Virement',
+                        'paypal' => 'PayPal',
+                        'autre' => 'Autre',
                     ])
-                    ->defaultItems(1)
-                    ->createItemButtonLabel('Ajouter une ligne')
-                    ->columns(3),
+                    ->required(),
+                DatePicker::make('issue_date')
+                    ->label('date d\'émission de la facture')
+                    ->required(),
+
+                DatePicker::make('due_date')
+                    ->label('Date d’échéance')
+                    ->required(),
+
+                DatePicker::make('payment_date')
+                    ->label('Date de paiement')
             ]);
+
     }
 
     public static function table(Table $table): Table
@@ -70,14 +79,45 @@ class InvoiceResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('invoice_number')->searchable(),
-                TextColumn::make('status')->searchable(),
-                TextColumn::make('project.name')->label('Project')->searchable(),
-                TextColumn::make('project.customer.name')->label('Customer')->searchable(),
+                TextColumn::make('quote.quote_number')->label('Quote number')->searchable(),
+                TextColumn::make('status.name')->label('Status')->searchable(),
+                TextColumn::make('quote.project.name')->label('Project')->searchable(),
+                TextColumn::make('quote.project.customer.name')->label('Customer')->searchable(),
                 TextColumn::make('total_cost_formatted')->label('Total (€)')
             ])
             ->filters([
-                //
+                SelectFilter::make('customer_id')
+                    ->label('Client')
+                    ->options(
+                        \App\Models\Customer::where('user_id', Auth::id())->pluck('name', 'id')
+                    )
+                    ->query(function (Builder $query, array $data): Builder {
+                        if ($data['value']) {
+                            return $query->whereHas('quote.project.customer', function (Builder $q) use ($data) {
+                                $q->where('id', $data['value']);
+                            });
+                        }
+
+                        return $query;
+                    }),
+                SelectFilter::make('project_id')
+                    ->label('Projet')
+                    ->options(
+                        Project::whereHas('customer', function ($q) {
+                            $q->where('user_id', Auth::id());
+                        })->pluck('name', 'id')
+                    )
+                    ->query(function (Builder $query, array $data): Builder {
+                        if ($data['value']) {
+                            return $query->whereHas('quote.project', function ($q) use ($data) {
+                                $q->where('id', $data['value']);
+                            });
+                        }
+
+                        return $query;
+                    }),
             ])
+
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -91,7 +131,7 @@ class InvoiceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            InvoiceLinesRelationManager::class,
         ];
     }
 
@@ -107,9 +147,11 @@ class InvoiceResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('user_id', Auth::id());
+            ->whereHas('quote.project.customer', function (Builder $query) {
+                $query->where('user_id', Auth::id());
+            });
     }
-    
+
     public static function getNavigationSort(): int
     {
         return 5;
