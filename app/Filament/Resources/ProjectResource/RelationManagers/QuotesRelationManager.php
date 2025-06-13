@@ -73,7 +73,7 @@ class QuotesRelationManager extends RelationManager
                     ->label('Status'),
                 Tables\Columns\TextColumn::make('created_at'),
                 Tables\Columns\TextColumn::make('expires_on'),
-
+                Tables\Columns\TextColumn::make('total_cost_formatted')->label('Total (€)')
             ])
             ->filters([
             ])
@@ -81,7 +81,8 @@ class QuotesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->hidden(fn ($record) => $record->status_id === 2),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

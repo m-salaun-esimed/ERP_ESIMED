@@ -25,7 +25,14 @@ class Project extends Model
 
     public function invoices()
     {
-        return $this->hasMany(Invoice::class);
+        return $this->hasManyThrough(
+            \App\Models\Invoice::class,
+            \App\Models\Quote::class,
+            'project_id', // Foreign key on quotes
+            'quote_id',   // Foreign key on invoices
+            'id',         // Local key on projects
+            'id'          // Local key on quotes
+        );
     }
 
     public function statusProject()

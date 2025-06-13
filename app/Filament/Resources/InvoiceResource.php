@@ -26,6 +26,7 @@ use App\Models\InvoiceLine;
 use Filament\Tables\Filters\SelectFilter;
 use App\Models\Customer;
 use App\Models\Project;
+use Filament\Notifications\Notification;
 
 class InvoiceResource extends Resource
 {
@@ -40,11 +41,22 @@ class InvoiceResource extends Resource
                 Select::make('invoice_status_id')
                     ->label('Statut facture')
                     ->options(InvoiceStatus::all()->pluck('name', 'id'))
-                    ->required(),
+                    ->required()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state == 3) {
+                            Notification::make()
+                                ->title('Attention')
+                                ->body('Une fois la facture marquée comme payée, elle ne pourra plus être modifiée ou supprimée.')
+                                ->warning()
+                                ->persistent()
+                                ->send();
+                        }
+                    }),
                 Select::make('quote_id')
                     ->label('Devis')
                     ->options(function () {
                         return Quote::where('status_id', 2)
+                            ->whereHas('quoteLines')
                             ->whereHas('project.customer', function ($query) {
                                 $query->where('user_id', Auth::id());
                             })
@@ -70,6 +82,8 @@ class InvoiceResource extends Resource
 
                 DatePicker::make('payment_date')
                     ->label('Date de paiement')
+                    ->requiredIf('invoice_status_id', 3)
+                    ->visible(fn (Forms\Get $get) => $get('invoice_status_id') == 3)
             ]);
 
     }
@@ -122,9 +136,6 @@ class InvoiceResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -141,6 +152,7 @@ class InvoiceResource extends Resource
             'index' => Pages\ListInvoices::route('/'),
             'create' => Pages\CreateInvoice::route('/create'),
             'edit' => Pages\EditInvoice::route('/{record}/edit'),
+            'view' => Pages\ViewInvoice::route('/{record}'),
         ];
     }
 

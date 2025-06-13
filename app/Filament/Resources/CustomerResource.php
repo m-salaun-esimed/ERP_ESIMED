@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\QueryException;
+use App\Filament\Resources\InvoiceResource\RelationManagers\InvoicesRelationManager;
 
 class CustomerResource extends Resource
 {
@@ -61,52 +62,56 @@ class CustomerResource extends Resource
             Tables\Actions\EditAction::make(),
 
             DeleteAction::make()
-                ->action(function ($record) {
-                    try {
-                        $record->delete();
-                        Notification::make()
-                            ->title('Client supprimé')
-                            ->success()
-                            ->send();
-                    } catch (\Exception $e) {
-                        Notification::make()
-                            ->title('Suppression impossible')
-                            ->body($e->getMessage()) // ou message custom
-                            ->danger()
-                            ->send();
-                    }
-                }),
+                    ->action(function ($record) {
+                        try {
+                            $record->delete();
+                            Notification::make()
+                                ->title('Client supprimé')
+                                ->success()
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Suppression impossible')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
         ])
         ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make()
-                    ->action(function ($records) {
-                        foreach ($records as $record) {
-                            try {
-                                $record->delete();
-                            } catch (QueryException $e) {
-                                Notification::make()
-                                    ->title('Suppression impossible')
-                                    ->body("Le client {$record->name} possède des projets associés.")
-                                    ->danger()
-                                    ->send();
-                                return;
-                            }
-                        }
+            Tables\Actions\BulkAction::make('supprimer_clients')
+                ->label('Supprimer les clients')
+                ->action(function ($records) {
+                    foreach ($records as $record) {
+                        try {
+                            $record->delete();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title("Erreur lors de la suppression")
+                                ->body("Impossible de supprimer le client \"{$record->name}\" : {$e->getMessage()}")
+                                ->danger()
+                                ->send();
 
-                        Notification::make()
-                            ->title('Clients supprimés')
-                            ->success()
-                            ->send();
-                    }),
-            ]),
+                            return;
+                        }
+                    }
+
+                    Notification::make()
+                        ->title("Clients supprimés")
+                        ->success()
+                        ->send();
+                })
+                ->deselectRecordsAfterCompletion()
+                ->requiresConfirmation()
+                ->color('danger')
+                ->icon('heroicon-o-trash'),
         ]);
 }
 
     public static function getRelations(): array
     {
         return [
-            //
+            InvoicesRelationManager::class,
         ];
     }
 

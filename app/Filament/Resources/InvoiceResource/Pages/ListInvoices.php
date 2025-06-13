@@ -16,4 +16,20 @@ class ListInvoices extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if ($this->record->invoice_status_id === 3) {
+            Notification::make()
+                ->title('Cette facture est déjà payée')
+                ->body('Vous ne pouvez plus la modifier.')
+                ->danger()
+                ->send();
+
+            $this->redirect(InvoiceResource::getUrl('view', ['record' => $this->record]));
+        }
+
+        return $data;
+    }
 }

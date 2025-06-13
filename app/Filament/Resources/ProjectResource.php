@@ -123,9 +123,6 @@ class ProjectResource extends Resource
             ])
             ->recordUrl(null)
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -135,6 +132,7 @@ class ProjectResource extends Resource
     {
         return [
             QuotesRelationManager::class,
+            \App\Filament\Resources\InvoiceResource\RelationManagers\InvoicesRelationManager::class,
         ];
     }
 
