@@ -17,4 +17,11 @@ class QuoteLine extends Model
     {
         return $this->belongsTo(Quote::class);
     }
+
+    protected static function booted()
+    {
+        static::saving(function ($line) {
+            $line->line_total = $line->unit_price * $line->quantity;
+        });
+    }
 }

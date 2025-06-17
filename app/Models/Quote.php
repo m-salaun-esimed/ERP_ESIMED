@@ -58,12 +58,7 @@ class Quote extends Model
     public function getTotalCostAttribute(): float
     {
         return $this->quoteLines->sum(function ($line) {
-            return $line->quantity * $line->unit_price;
+            return $line->line_total;
         });
-    }
-
-    public function getTotalCostFormattedAttribute(): string
-    {
-        return Number::currency($this->total_cost, 'EUR');
     }
 }

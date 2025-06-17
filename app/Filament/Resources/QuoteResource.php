@@ -75,8 +75,9 @@ class QuoteResource extends Resource
                     ->label('Status'),
                 TextColumn::make('created_at'),
                 TextColumn::make('expires_on'),
-                TextColumn::make('total_cost_formatted')->label('Total (€)')
-
+                TextColumn::make('total_cost')
+                    ->label('Total')
+                    ->money('EUR', locale: 'fr_FR'),
             ])
             ->filters([
                 SelectFilter::make('project_id')

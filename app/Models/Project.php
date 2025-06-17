@@ -57,7 +57,7 @@ class Project extends Model
             ->get()
             ->flatMap->invoiceLines
             ->sum(function ($line) {
-                return $line->unit_price * $line->quantity;
+                return $line->line_total;
             });
     }
 }

@@ -95,6 +95,8 @@ class ProjectResource extends Resource
                 TextColumn::make('total_paid_invoices_amount')
                     ->label('Total Factures Payées (€)')
                     ->getStateUsing(fn (Project $record) => $record->total_paid_invoices_amount)
+                    ->money('EUR', locale: 'fr_FR')
+                    ->sortable(),
 
             ])
             ->filters([

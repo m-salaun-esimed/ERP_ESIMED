@@ -86,7 +86,9 @@ class InvoicesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('invoice_number'),
                 TextColumn::make('status.name')->label('Status')->searchable(),
-                TextColumn::make('total_cost_formatted')->label('Total (€)')
+                TextColumn::make('total_cost')
+                    ->label('Total invoice lines (€)')
+                    ->money('EUR', locale: 'fr_FR'),
             ])
             ->filters([
                 //

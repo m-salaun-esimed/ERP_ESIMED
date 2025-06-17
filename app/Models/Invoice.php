@@ -52,12 +52,7 @@ class Invoice extends Model
     public function getTotalCostAttribute(): float
     {
         return $this->invoiceLines->sum(function ($line) {
-            return $line->quantity * $line->unit_price;
+            return $line->line_total;
         });
-    }
-
-    public function getTotalCostFormattedAttribute(): string
-    {
-        return Number::currency($this->total_cost, 'EUR');
     }
 }

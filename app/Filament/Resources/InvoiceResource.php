@@ -28,6 +28,7 @@ use App\Models\Customer;
 use App\Models\Project;
 use Filament\Notifications\Notification;
 use App\Filament\Resources\InvoiceResource\Pages\ViewInvoice;
+use Carbon\Carbon;
 
 class InvoiceResource extends Resource
 {
@@ -92,13 +93,35 @@ class InvoiceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->withSum('invoiceLines', 'line_total'))
             ->columns([
                 TextColumn::make('invoice_number')->searchable(),
                 TextColumn::make('quote.quote_number')->label('Quote number')->searchable(),
                 TextColumn::make('status.name')->label('Status')->searchable(),
                 TextColumn::make('quote.project.name')->label('Project')->searchable(),
                 TextColumn::make('quote.project.customer.name')->label('Customer')->searchable(),
-                TextColumn::make('total_cost_formatted')->label('Total (€)')
+                TextColumn::make('invoice_lines_sum_line_total')
+                    ->label('Total invoice lines (€)')
+                    ->money('EUR', locale: 'fr_FR')
+                    ->sortable(),
+                TextColumn::make('due_date')
+                    ->label('Date d’échéance')
+                    ->sortable()
+                    ->color(function (Invoice $record) {
+                        $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
+                        return $isOverdue ? 'danger' : null;
+                    })
+                    ->formatStateUsing(fn ($state) => \Carbon\Carbon::parse($state)->format('d/m/Y')),
+                TextColumn::make('due_date_status')
+                    ->label('En retard ?')
+                    ->getStateUsing(function (Invoice $record) {
+                        $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
+                        return $isOverdue ? '⚠️ Oui' : 'Non';
+                    })
+                    ->color(function (Invoice $record) {
+                        $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
+                        return $isOverdue ? 'danger' : 'success';
+                    }),
             ])
             ->filters([
                 SelectFilter::make('customer_id')
@@ -129,6 +152,24 @@ class InvoiceResource extends Resource
                             });
                         }
 
+                        return $query;
+                    }),
+                SelectFilter::make('retard')
+                    ->label('Factures en retard')
+                    ->options([
+                        'yes' => 'Oui',
+                        'no' => 'Non',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (($data['value'] ?? null) === 'yes') {
+                            return $query->where('due_date', '<', Carbon::now())
+                                        ->where('invoice_status_id', '!=', 3);
+                        } elseif (($data['value'] ?? null) === 'no') {
+                            return $query->where(function ($q) {
+                                $q->where('due_date', '>=', Carbon::now())
+                                ->orWhere('invoice_status_id', 3);
+                            });
+                        }
                         return $query;
                     }),
             ])

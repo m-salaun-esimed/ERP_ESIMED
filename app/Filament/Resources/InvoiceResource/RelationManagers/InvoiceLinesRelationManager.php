@@ -32,6 +32,10 @@ class InvoiceLinesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('description'),
                 Tables\Columns\TextColumn::make('quantity'),
                 Tables\Columns\TextColumn::make('unit_price'),
+                Tables\Columns\TextColumn::make('line_total')
+                    ->label('Total Factures (€)')
+                    ->money('EUR', locale: 'fr_FR')
+                    ->sortable(),
             ])
             ->filters([
                 //

@@ -76,7 +76,9 @@ class QuotesRelationManager extends RelationManager
                     ->label('Status'),
                 Tables\Columns\TextColumn::make('created_at'),
                 Tables\Columns\TextColumn::make('expires_on'),
-                Tables\Columns\TextColumn::make('total_cost_formatted')->label('Total (€)')
+                Tables\Columns\TextColumn::make('total_cost')
+                        ->label('Total quote lines (€)')
+                    ->money('EUR', locale: 'fr_FR'),
             ])
             ->filters([
             ])
