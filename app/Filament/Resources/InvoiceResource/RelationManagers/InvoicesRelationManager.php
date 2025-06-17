@@ -21,6 +21,9 @@ use Filament\Tables\Actions\CreateAction;
 use App\Models\InvoiceLine;
 use App\Filament\Resources\InvoiceResource\Pages;
 use App\Filament\Resources\InvoiceResource\Pages\ViewInvoice;
+use Filament\Tables\Filters\SelectFilter;
+use App\Models\Project;
+use Carbon\Carbon;
 
 class InvoicesRelationManager extends RelationManager
 {
@@ -89,9 +92,44 @@ class InvoicesRelationManager extends RelationManager
                 TextColumn::make('total_cost')
                     ->label('Total invoice lines (€)')
                     ->money('EUR', locale: 'fr_FR'),
+                TextColumn::make('due_date')
+                    ->label('Date d’échéance')
+                    ->sortable()
+                    ->color(function (Invoice $record) {
+                        $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
+                        return $isOverdue ? 'danger' : null;
+                    })
+                    ->formatStateUsing(fn ($state) => \Carbon\Carbon::parse($state)->format('d/m/Y')),
+                TextColumn::make('due_date_status')
+                    ->label('En retard ?')
+                    ->getStateUsing(function (Invoice $record) {
+                        $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
+                        return $isOverdue ? '⚠️ Oui' : 'Non';
+                    })
+                    ->color(function (Invoice $record) {
+                        $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
+                        return $isOverdue ? 'danger' : 'success';
+                    }),
             ])
             ->filters([
-                //
+                SelectFilter::make('retard')
+                    ->label('Factures en retard')
+                    ->options([
+                        'yes' => 'Oui',
+                        'no' => 'Non',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (($data['value'] ?? null) === 'yes') {
+                            return $query->where('due_date', '<', Carbon::now())
+                                        ->where('invoice_status_id', '!=', 3);
+                        } elseif (($data['value'] ?? null) === 'no') {
+                            return $query->where(function ($q) {
+                                $q->where('due_date', '>=', Carbon::now())
+                                ->orWhere('invoice_status_id', 3);
+                            });
+                        }
+                        return $query;
+                    }),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()

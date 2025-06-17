@@ -23,6 +23,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\QuoteResource\RelationManagers\QuoteLinesRelationManager;
 use App\Filament\Resources\QuoteResource\Pages\ViewQuote;
+use Carbon\Carbon;
 
 class QuoteResource extends Resource
 {
@@ -73,8 +74,10 @@ class QuoteResource extends Resource
                 TextColumn::make('project.name')->label('Project'),
                 TextColumn::make('statusQuote.name')
                     ->label('Status'),
-                TextColumn::make('created_at'),
-                TextColumn::make('expires_on'),
+                TextColumn::make('created_at')
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
+                TextColumn::make('expires_on')
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
                 TextColumn::make('total_cost')
                     ->label('Total')
                     ->money('EUR', locale: 'fr_FR'),

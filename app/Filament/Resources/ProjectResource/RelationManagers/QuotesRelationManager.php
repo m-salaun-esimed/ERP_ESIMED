@@ -27,6 +27,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\QuoteResource\RelationManagers\QuoteLinesRelationManager;
 use App\Filament\Resources\QuoteResource\Pages\ViewQuote;
+use Carbon\Carbon;
 
 class QuotesRelationManager extends RelationManager
 {
@@ -74,8 +75,11 @@ class QuotesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('quote_number'),
                 Tables\Columns\TextColumn::make('statusQuote.name')
                     ->label('Status'),
-                Tables\Columns\TextColumn::make('created_at'),
-                Tables\Columns\TextColumn::make('expires_on'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
+
+                Tables\Columns\TextColumn::make('expires_on')
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
                 Tables\Columns\TextColumn::make('total_cost')
                         ->label('Total quote lines (€)')
                     ->money('EUR', locale: 'fr_FR'),
