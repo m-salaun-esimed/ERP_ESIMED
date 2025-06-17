@@ -44,4 +44,20 @@ class Project extends Model
     {
         return $this->hasMany(Quote::class);
     }
+
+    public function paidInvoices()
+    {
+        return $this->invoices()->where('invoice_status_id', 3);
+    }
+
+    public function getTotalPaidInvoicesAmountAttribute()
+    {
+        return $this->paidInvoices()
+            ->with('invoiceLines')
+            ->get()
+            ->flatMap->invoiceLines
+            ->sum(function ($line) {
+                return $line->unit_price * $line->quantity;
+            });
+    }
 }

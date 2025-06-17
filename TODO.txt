@@ -3,10 +3,10 @@
 
 - Dans quote 
     Ne pas pouvoir sup une quote qui a 1...x invoice lié
-    ni modifié et supprimer ses lignes    
+    ni modifié et supprimer ses lignes
 
 - Dans project -> quote 
-    Je ne dois pas pouvoir supprimer une quote qui a une invoice
+    Je ne dois pas pouvoir supprimer une quote qui a une invoice // FAIT
 
 - Dans project -> invoice
     Je ne dois pas pouvoir supprimer une invoice envoyée ou payée
@@ -14,7 +14,7 @@
     Faire le edit invoice 
 
 - Dans customer -> invoice
-    Je ne dois pas pouvoir supprimer/modifié une invoice envoyée ou payée
+    Je ne dois pas pouvoir supprimer/modifié une invoice  payée
     Faire le form new invoice
     Faire le form edit invoice
 
@@ -32,3 +32,8 @@
     trimestre précédent et suivant.
     - Un graphique avec des CA mensuels payés.
     - Un graphique avec l’évolution du CA annuel payé (par valeurs mensuelles)
+
+
+- Tout passer en francais, dont les dates et les sommes
+
+- Faire systeme mail et cron

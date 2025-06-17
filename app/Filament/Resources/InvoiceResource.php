@@ -27,6 +27,7 @@ use Filament\Tables\Filters\SelectFilter;
 use App\Models\Customer;
 use App\Models\Project;
 use Filament\Notifications\Notification;
+use App\Filament\Resources\InvoiceResource\Pages\ViewInvoice;
 
 class InvoiceResource extends Resource
 {
@@ -133,7 +134,11 @@ class InvoiceResource extends Resource
             ])
 
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('View')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn ($record) => ViewInvoice::getUrl(['record' => $record->getKey()])),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (Invoice $record) => $record->invoice_status_id != 3),
             ])
             ->bulkActions([
             ]);

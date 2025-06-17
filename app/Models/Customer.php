@@ -39,14 +39,14 @@ class Customer extends Model
     public function invoices()
     {
         return $this->hasManyThrough(
-            \App\Models\Invoice::class,
-            \App\Models\Project::class,
-            'customer_id',       // Foreign key on the projects table...
-            'quote_id',          // Foreign key on the invoices table...
-            'id',                // Local key on the customers table...
-            'id'                 // Local key on the projects table...
-        )->join('quotes', 'projects.id', '=', 'quotes.project_id')
+            \App\Models\Invoice::class,   // Final model
+            \App\Models\Quote::class,     // Intermediate model
+            'project_id',                 // Foreign key on quotes table
+            'quote_id',                   // Foreign key on invoices table
+            'id',                         // Local key on customers table (-> project.customer_id)
+            'id'                          // Local key on quotes table
+        )
+        ->join('projects', 'projects.id', '=', 'quotes.project_id')
         ->whereColumn('quotes.id', 'invoices.quote_id');
     }
-
 }

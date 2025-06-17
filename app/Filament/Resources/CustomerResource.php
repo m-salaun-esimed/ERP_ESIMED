@@ -19,6 +19,8 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\QueryException;
 use App\Filament\Resources\InvoiceResource\RelationManagers\InvoicesRelationManager;
+use App\Filament\Resources\CustomerResource\Pages\ViewCustomer;
+use App\Filament\Resources\CustomerResource\RelationManagers\ProjectsRelationManager;
 
 class CustomerResource extends Resource
 {
@@ -59,6 +61,9 @@ class CustomerResource extends Resource
             TextColumn::make('address')->searchable(),
         ])
         ->actions([
+            Tables\Actions\Action::make('View')
+                ->icon('heroicon-o-eye')
+                ->url(fn ($record) => ViewCustomer::getUrl(['record' => $record->getKey()])),
             Tables\Actions\EditAction::make(),
 
             DeleteAction::make()
@@ -111,6 +116,7 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
+            ProjectsRelationManager::class,
             InvoicesRelationManager::class,
         ];
     }
@@ -121,6 +127,7 @@ class CustomerResource extends Resource
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
+            'view' => Pages\ViewCustomer::route('/{record}')
         ];
     }
 

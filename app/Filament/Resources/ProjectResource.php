@@ -92,15 +92,19 @@ class ProjectResource extends Resource
                 TextColumn::make('customer.name')->label('Client')->searchable(),
                 TextColumn::make('date_started')->date('d/m/Y à H:i'),
                 TextColumn::make('date_end')->date('d/m/Y à H:i'),
+                TextColumn::make('total_paid_invoices_amount')
+                    ->label('Total Factures Payées (€)')
+                    ->getStateUsing(fn (Project $record) => $record->total_paid_invoices_amount)
+
             ])
             ->filters([
-                SelectFilter::make('status_project_id') // 👈 le vrai champ filtrable ici
+                SelectFilter::make('status_project_id')
                     ->label('Status')
                     ->options(function () {
-                        return ProjectStatus::pluck('name', 'id')->toArray(); // depuis la BDD
+                        return ProjectStatus::pluck('name', 'id')->toArray();
                     })
                     ->default(function () {
-                        return ProjectStatus::where('name', 'démarré')->value('id'); // 👈 par défaut = 'démarré'
+                        return ProjectStatus::where('name', 'démarré')->value('id');
                     }),
 
                 SelectFilter::make('customer_id')
@@ -116,10 +120,10 @@ class ProjectResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('View')
                             ->icon('heroicon-o-eye')
                             ->url(fn ($record) => ViewProject::getUrl(['record' => $record->getKey()])),
+                Tables\Actions\EditAction::make(),
             ])
             ->recordUrl(null)
             ->bulkActions([

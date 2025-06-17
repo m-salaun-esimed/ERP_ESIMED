@@ -32,6 +32,11 @@ class Quote extends Model
         return $this->hasMany(QuoteLine::class);
     }
 
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
     public static function boot()
     {
         parent::boot();
@@ -41,6 +46,12 @@ class Quote extends Model
             $nextNumber = $lastInvoice ? $lastInvoice->id + 1 : 1;
 
             $invoice->quote_number = 'Q-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        });
+
+        static::deleting(function ($quote) {
+            if ($quote->invoice()->exists()) {
+                throw new \Exception('Ce devis a une facture associée et ne peut pas être supprimé.');
+            }
         });
     }
 

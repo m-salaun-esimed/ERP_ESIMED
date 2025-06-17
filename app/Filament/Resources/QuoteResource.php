@@ -22,6 +22,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Resources\QuoteResource\RelationManagers\QuoteLinesRelationManager;
+use App\Filament\Resources\QuoteResource\Pages\ViewQuote;
 
 class QuoteResource extends Resource
 {
@@ -92,7 +93,11 @@ class QuoteResource extends Resource
                     ->options(QuoteStatus::all()->pluck('name', 'id')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (Quote $record) => $record->status_id != 2),
+                Tables\Actions\Action::make('View')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn ($record) => ViewQuote::getUrl(['record' => $record->getKey()])),
             ])
             ->bulkActions([
             ]);
@@ -111,6 +116,7 @@ class QuoteResource extends Resource
             'index' => Pages\ListQuotes::route('/'),
             'create' => Pages\CreateQuote::route('/create'),
             'edit' => Pages\EditQuote::route('/{record}/edit'),
+            'view' => Pages\ViewQuote::route('/{record}/view')
         ];
     }
 

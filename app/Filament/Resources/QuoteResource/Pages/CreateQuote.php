@@ -14,10 +14,10 @@ class CreateQuote extends CreateRecord
     {
         $statusId = $this->form->getState()['status_id'] ?? null;
 
-        if ($statusId == 2) {
+        if ($statusId == 2 || $statusId == 1) {
             Notification::make()
                 ->title('Erreur')
-                ->body('Vous ne pouvez pas créer un devis déjà accepté. Ajoutez d’abord des lignes.')
+                ->body('Vous ne pouvez pas créer un devis déjà accepté ou envoyé. Ajoutez d’abord des lignes.')
                 ->danger()
                 ->send();
 

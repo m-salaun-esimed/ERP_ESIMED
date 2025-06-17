@@ -14,8 +14,11 @@ class EditProject extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
-                ->visible(fn (Project $record) => $record->invoices()->count() === 0)
+           Actions\DeleteAction::make()
+            ->visible(fn (Project $record) =>
+                $record->quotes()->count() === 0 &&
+                $record->invoices()->count() === 0
+            ),
         ];
     }
 }

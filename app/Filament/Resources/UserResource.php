@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
-
+use App\Filament\Resources\UserResource\Pages\EditProfile;
 
 class UserResource extends Resource
 {

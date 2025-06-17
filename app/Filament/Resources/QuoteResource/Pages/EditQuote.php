@@ -23,14 +23,29 @@ class EditQuote extends EditRecord
         $statusId = $this->form->getState()['status_id'] ?? null;
         $hasLines = $this->record->quoteLines()->count() > 0;
 
-        if ($statusId == 2 && !$hasLines) {
+        if (($statusId == 1 || $statusId == 2) && !$hasLines) {
             Notification::make()
                 ->title('Erreur')
-                ->body('Vous ne pouvez pas passer ce devis en statut "accepté" sans avoir au moins une ligne.')
+                ->body('Vous ne pouvez pas passer ce devis en statut "accepté" ou "envoyé" sans avoir au moins une ligne.')
                 ->danger()
                 ->send();
 
             $this->halt(); // ⛔️ stoppe la sauvegarde sans erreur
         }
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        if ($this->record->status_id === 2) {
+            Notification::make()
+                ->title('Cette facture est déjà payée')
+                ->body('Vous ne pouvez plus la modifier.')
+                ->danger()
+                ->send();
+
+            $this->redirect(QuoteResource::getUrl('view', ['record' => $this->record]));
+        }
+
+        return $data;
     }
 }

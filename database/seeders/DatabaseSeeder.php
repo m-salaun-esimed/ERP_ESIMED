@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'envoyée'],
             ['name' => 'accepté'],
             ['name' => 'refusé'],
+            ['name' => 'en attente'],
         ]);
 
         DB::table('invoice_statuses')->insert([
