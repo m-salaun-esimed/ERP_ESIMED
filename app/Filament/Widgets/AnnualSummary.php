@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Models\Invoice;
+use Illuminate\Support\Facades\Auth;
 
 class AnnualSummary extends StatsOverviewWidget
 {
@@ -11,11 +12,16 @@ class AnnualSummary extends StatsOverviewWidget
     {
         $year = now()->year;
 
-        $invoices = Invoice::withSum('invoiceLines', 'line_total')->whereYear('issue_date', $year)->get();
+        $invoices = Invoice::withSum('invoiceLines', 'line_total')
+            ->whereYear('issue_date', $year)
+            ->get();
+
         $caAnnuel = $invoices->where('invoice_status_id', 3)->sum('invoice_lines_sum_line_total');
         $enAttente = $invoices->where('invoice_status_id', '!=', 3)->sum('invoice_lines_sum_line_total');
         $nonEnvoyees = $invoices->where('invoice_status_id', 1)->sum('invoice_lines_sum_line_total');
-        $objectifCA = 100000;
+
+        $objectifCA = Auth::user()->max_annual_revenue ?? 0;
+
         $resteAFaire = $objectifCA - $caAnnuel;
 
         return [
