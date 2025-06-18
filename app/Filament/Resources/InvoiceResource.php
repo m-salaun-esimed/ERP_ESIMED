@@ -29,7 +29,6 @@ use App\Models\Project;
 use Filament\Notifications\Notification;
 use App\Filament\Resources\InvoiceResource\Pages\ViewInvoice;
 use Carbon\Carbon;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 
 class InvoiceResource extends Resource
 {
@@ -172,10 +171,6 @@ class InvoiceResource extends Resource
                         }
                         return $query;
                     }),
-            ])
-            ->headerActions([
-                FilamentExportHeaderAction::make('export')
-                    ->icon('heroicon-o-arrow-up-tray'),
             ])
             ->actions([
                 Tables\Actions\Action::make('View')
