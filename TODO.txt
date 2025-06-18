@@ -1,39 +1,4 @@
-
-- Page register 
-
-- Dans quote 
-    Ne pas pouvoir sup une quote qui a 1...x invoice lié
-    ni modifié et supprimer ses lignes
-
-- Dans project -> quote 
-    Je ne dois pas pouvoir supprimer une quote qui a une invoice // FAIT
-
-- Dans project -> invoice
-    Je ne dois pas pouvoir supprimer une invoice envoyée ou payée
-    Faire le new invoice
-    Faire le edit invoice 
-
-- Dans customer -> invoice
-    Je ne dois pas pouvoir supprimer/modifié une invoice  payée
-    Faire le form new invoice
-    Faire le form edit invoice
-
-- Dans customer 
-    Voir les projects affiliés
-
-- Status
-    Mettre des couleurs
-
-- Dashboard
-    - Résumé annuel de l’activité : CA annuel, somme des paiements en attente, somme des factures éditées non 
-    envoyées, CA annuel max, CA annuel restant à faire.
-    - Résumé trimestriel : période affichée (premier jour et dernier jour du trimestre), CA payé, CA estimé (estimation 
-    basée sur les dates de paiement limites), charges à payer, charges estimées à payer. On doit pouvoir visualisez le 
-    trimestre précédent et suivant.
-    - Un graphique avec des CA mensuels payés.
-    - Un graphique avec l’évolution du CA annuel payé (par valeurs mensuelles)
-
-
-- Tout passer en francais, dont les dates et les sommes
-
-- Faire systeme mail et cron
+TODO :
+Tout mettre en francais
+Dashboard finit
+Cron send email

@@ -33,6 +33,9 @@ class User extends Authenticatable implements FilamentUser
         'remember_token',
     ];
 
+    protected $casts = [
+        'birth_date' => 'date', // ou 'datetime' si tu as l'heure
+    ];
     /**
      * Get the attributes that should be cast.
      *

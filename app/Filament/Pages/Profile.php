@@ -12,12 +12,11 @@ class Profile extends Page implements Forms\Contracts\HasForms
     use Forms\Concerns\InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-    protected static ?string $navigationGroup = 'Mon compte';
+    protected static ?string $navigationGroup = 'My Account';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.profile';
-    protected static ?string $title = 'Mon profil';
+    protected static ?string $title = 'My profile';
 
-    // Propriétés publiques pour chaque champ
     public $name;
     public $first_name;
     public $second_name;
