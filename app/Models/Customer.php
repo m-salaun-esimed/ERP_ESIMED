@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Models;
-
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 use Illuminate\Database\Eloquent\Model;
-
 class Customer extends Model
 {
     public $timestamps = false;
@@ -36,17 +35,23 @@ class Customer extends Model
         return $this->hasMany(Project::class);
     }
 
+    use HasRelationships;
+
     public function invoices()
     {
-        return $this->hasManyThrough(
-            \App\Models\Invoice::class,   // Final model
-            \App\Models\Quote::class,     // Intermediate model
-            'project_id',                 // Foreign key on quotes table
-            'quote_id',                   // Foreign key on invoices table
-            'id',                         // Local key on customers table (-> project.customer_id)
-            'id'                          // Local key on quotes table
-        )
-        ->join('projects', 'projects.id', '=', 'quotes.project_id')
-        ->whereColumn('quotes.id', 'invoices.quote_id');
+        return $this->hasManyDeep(
+            \App\Models\Invoice::class,
+            [\App\Models\Project::class, \App\Models\Quote::class],
+            [
+                'customer_id', 
+                'project_id',
+                'quote_id'
+            ],
+            [
+                'id',
+                'id',
+                'id'
+            ]
+        );
     }
 }
