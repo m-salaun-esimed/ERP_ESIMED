@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 use App\Filament\Widgets\AnnualSummary;
 use App\Filament\Widgets\QuarterlySummary;
 use App\Filament\Widgets\MonthlyPaidRevenueChart;
-// use App\Filament\Widgets\AnnualGrowthChart;
+use App\Filament\Widgets\AnnualGrowthChart;
 
 class Dashboard extends Page
 {
@@ -20,7 +20,7 @@ class Dashboard extends Page
             AnnualSummary::class,
             QuarterlySummary::class,
             MonthlyPaidRevenueChart::class,
-            // AnnualGrowthChart::class,
+            AnnualGrowthChart::class,
         ];
     }
 }

@@ -15,7 +15,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
     protected static ?string $navigationGroup = 'My Account';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.profile';
-    protected static ?string $title = 'My profile';
+    protected static ?string $title = 'My Profile';
 
     public $name;
     public $first_name;
@@ -35,7 +35,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
             'name' => $user->name,
             'first_name' => $user->first_name,
             'second_name' => $user->second_name,
-            'birth_date' => $user->birth_date ? $user->birth_date->format('Y-m-d') : null, // format date HTML
+            'birth_date' => $user->birth_date ? $user->birth_date->format('Y-m-d') : null, // HTML date format
             'email' => $user->email,
             'phone_number' => $user->phone_number,
             'max_annual_revenue' => $user->max_annual_revenue,
@@ -48,20 +48,20 @@ class Profile extends Page implements Forms\Contracts\HasForms
     {
         return [
             Forms\Components\TextInput::make('name')
-                ->label('Nom')
+                ->label('Last Name')
                 ->required()
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('first_name')
-                ->label('Prénom')
+                ->label('First Name')
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('second_name')
-                ->label('Deuxième prénom')
+                ->label('Middle Name')
                 ->maxLength(255),
 
             Forms\Components\DatePicker::make('birth_date')
-                ->label('Date de naissance'),
+                ->label('Date of Birth'),
 
             Forms\Components\TextInput::make('email')
                 ->label('Email')
@@ -70,20 +70,20 @@ class Profile extends Page implements Forms\Contracts\HasForms
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('phone_number')
-                ->label('Téléphone')
+                ->label('Phone Number')
                 ->tel()
                 ->maxLength(20),
 
             Forms\Components\TextInput::make('max_annual_revenue')
-                ->label('Revenu annuel max')
+                ->label('Max Annual Revenue')
                 ->numeric(),
 
             Forms\Components\Textarea::make('address')
-                ->label('Adresse')
+                ->label('Address')
                 ->rows(3),
 
             Forms\Components\TextInput::make('charge_rate')
-                ->label('Taux de charge')
+                ->label('Charge Rate')
                 ->numeric(),
         ];
     }
@@ -107,7 +107,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
         $user->save();
 
         Notification::make()
-            ->title('Profil mis à jour avec succès.')
+            ->title('Profile updated successfully.')
             ->success()
             ->send();
     }

@@ -68,15 +68,15 @@ class CustomerResource extends Resource
 
             DeleteAction::make()
                     ->action(function ($record) {
-                        try {
+                       try {
                             $record->delete();
                             Notification::make()
-                                ->title('Client supprimé')
+                                ->title('Customer deleted')
                                 ->success()
                                 ->send();
                         } catch (\Exception $e) {
                             Notification::make()
-                                ->title('Suppression impossible')
+                                ->title('Deletion failed')
                                 ->body($e->getMessage())
                                 ->danger()
                                 ->send();
@@ -85,24 +85,24 @@ class CustomerResource extends Resource
         ])
         ->bulkActions([
             Tables\Actions\BulkAction::make('supprimer_clients')
-                ->label('Supprimer les clients')
+                ->label('Delete customers')
                 ->action(function ($records) {
                     foreach ($records as $record) {
-                        try {
-                            $record->delete();
-                        } catch (\Exception $e) {
-                            Notification::make()
-                                ->title("Erreur lors de la suppression")
-                                ->body("Impossible de supprimer le client \"{$record->name}\" : {$e->getMessage()}")
-                                ->danger()
-                                ->send();
+                    try {
+                        $record->delete();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title("Error during deletion")
+                            ->body("Unable to delete customer \"{$record->name}\": {$e->getMessage()}")
+                            ->danger()
+                            ->send();
 
-                            return;
-                        }
+                        return;
+                    }
                     }
 
                     Notification::make()
-                        ->title("Clients supprimés")
+                        ->title("Customer deleted")
                         ->success()
                         ->send();
                 })

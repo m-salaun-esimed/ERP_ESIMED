@@ -5,9 +5,9 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 
-class MonthlyPaidRevenueChart extends ChartWidget
+class AnnualGrowthChart extends ChartWidget
 {
-    protected static ?string $heading = 'Monthly Paid Revenue';
+    protected static ?string $heading = 'Annual Paid Revenue Growth';
 
     public ?int $year = null;
 
@@ -18,25 +18,32 @@ class MonthlyPaidRevenueChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'line';
     }
 
     protected function getData(): array
     {
         $year = $this->year ?? now()->year;
 
-        // Calculate monthly revenues
-        $revenues = [];
+        $monthlyRevenues = [];
+
         for ($month = 1; $month <= 12; $month++) {
-            $revenues[] = DB::table('invoices')
+            $monthlyRevenues[] = DB::table('invoices')
                 ->join('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-                ->where('invoices.invoice_status_id', 3)  // paid?
+                ->where('invoices.invoice_status_id', 3) // paid invoices
                 ->whereYear('invoices.payment_date', $year)
                 ->whereMonth('invoices.payment_date', $month)
                 ->sum('invoice_lines.line_total');
         }
 
-        // Labels: month names (French here)
+        // Calculate the cumulative revenue
+        $cumulativeRevenues = [];
+        $sum = 0;
+        foreach ($monthlyRevenues as $revenue) {
+            $sum += $revenue;
+            $cumulativeRevenues[] = $sum;
+        }
+
         $labels = [
             'January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'
@@ -46,12 +53,12 @@ class MonthlyPaidRevenueChart extends ChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => "Paid revenue in $year",
-                    'data' => $revenues,
-                    'backgroundColor' => [
-                        '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE', '#EFF6FF',
-                        '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE', '#EFF6FF',
-                    ],
+                    'label' => "Cumulative paid revenue growth in $year",
+                    'data' => $cumulativeRevenues,
+                    'fill' => false,
+                    'borderColor' => '#3B82F6',
+                    'tension' => 0.3,
+                    'pointBackgroundColor' => '#2563EB',
                 ],
             ],
         ];

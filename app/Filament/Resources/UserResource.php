@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\DatePicker;
 use App\Filament\Resources\UserResource\Pages\EditProfile;
+use Illuminate\Database\Eloquent\Model;
 
 class UserResource extends Resource
 {
@@ -112,6 +113,26 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return true;
+        return auth()->check() && auth()->user()->admin === 1;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->admin;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()->admin;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()->admin;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()->admin;
     }
 }

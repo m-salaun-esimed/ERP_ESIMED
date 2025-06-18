@@ -25,8 +25,8 @@ class EditQuote extends EditRecord
 
         if (($statusId == 1 || $statusId == 2) && !$hasLines) {
             Notification::make()
-                ->title('Erreur')
-                ->body('Vous ne pouvez pas passer ce devis en statut "accepté" ou "envoyé" sans avoir au moins une ligne.')
+                ->title('Error')
+                ->body('You cannot change this quote to "accepted" or "sent" status without at least one line item.')
                 ->danger()
                 ->send();
 
@@ -38,8 +38,8 @@ class EditQuote extends EditRecord
     {
         if ($this->record->status_id === 2) {
             Notification::make()
-                ->title('Cette facture est déjà payée')
-                ->body('Vous ne pouvez plus la modifier.')
+                ->title('This invoice is already paid')
+                ->body('You can no longer modify it.')
                 ->danger()
                 ->send();
 

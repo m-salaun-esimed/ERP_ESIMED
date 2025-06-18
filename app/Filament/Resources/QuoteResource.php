@@ -36,12 +36,12 @@ class QuoteResource extends Resource
         return $form
             ->schema([
                 Select::make('status_id')
-                    ->label('Statut du devis')
+                    ->label('Status quote')
                     ->options(QuoteStatus::all()->pluck('name', 'id'))
                     ->required(),
 
                 Select::make('project_id')
-                    ->label('Projet')
+                    ->label('Project')
                     ->options(function () {
                         $user = Auth::user();
 
@@ -52,12 +52,10 @@ class QuoteResource extends Resource
                     ->required(),
 
                 DatePicker::make('created_at')
-                    ->label('Date de création')
                     ->default(now())
                     ->disabled()
                     ->dehydrated(true),
                 DatePicker::make('expires_on')
-                    ->label('Expire le')
                     ->default(now()->addDays(30))
                     ->required()
                     ->closeOnDateSelection(),
@@ -84,7 +82,7 @@ class QuoteResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('project_id')
-                    ->label('Projet')
+                    ->label('Project')
                     ->options(function () {
                         $user = Auth::user();
                         return Project::whereHas('customer', function ($query) use ($user) {
@@ -93,7 +91,7 @@ class QuoteResource extends Resource
                     }),
 
                 Tables\Filters\SelectFilter::make('status_id')
-                    ->label('Statut')
+                    ->label('Status')
                     ->options(QuoteStatus::all()->pluck('name', 'id')),
             ])
             ->actions([

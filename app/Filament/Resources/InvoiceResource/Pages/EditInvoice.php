@@ -22,8 +22,8 @@ class EditInvoice extends EditRecord
     {
         if ($this->record->invoice_status_id === 3) {
             Notification::make()
-                ->title('Cette facture est déjà payée')
-                ->body('Vous ne pouvez plus la modifier.')
+                ->title('This invoice is already paid')
+                ->body('You can no longer modify it.')
                 ->danger()
                 ->send();
 

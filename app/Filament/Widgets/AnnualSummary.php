@@ -25,11 +25,11 @@ class AnnualSummary extends StatsOverviewWidget
         $resteAFaire = $objectifCA - $caAnnuel;
 
         return [
-            Card::make('CA annuel', number_format($caAnnuel, 2, ',', ' ') . ' €'),
-            Card::make('Paiements en attente', number_format($enAttente, 2, ',', ' ') . ' €'),
-            Card::make('Factures non envoyées', number_format($nonEnvoyees, 2, ',', ' ') . ' €'),
-            Card::make('Objectif annuel', number_format($objectifCA, 2, ',', ' ') . ' €'),
-            Card::make('CA restant à faire', number_format($resteAFaire, 2, ',', ' ') . ' €'),
+            Card::make('Annual Revenue', number_format($caAnnuel, 2, ',', ' ') . ' €'),
+            Card::make('Pending Payments', number_format($enAttente, 2, ',', ' ') . ' €'),
+            Card::make('Unsent Invoices', number_format($nonEnvoyees, 2, ',', ' ') . ' €'),
+            Card::make('Annual Target', number_format($objectifCA, 2, ',', ' ') . ' €'),
+            Card::make('Remaining Revenue', number_format($resteAFaire, 2, ',', ' ') . ' €'),
         ];
     }
 }

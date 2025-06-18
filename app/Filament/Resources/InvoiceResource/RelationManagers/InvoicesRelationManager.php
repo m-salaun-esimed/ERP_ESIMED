@@ -34,21 +34,21 @@ class InvoicesRelationManager extends RelationManager
         return $form
             ->schema([
                 Select::make('invoice_status_id')
-                    ->label('Statut facture')
+                    ->label('Status invoice')
                     ->options(InvoiceStatus::all()->pluck('name', 'id'))
                     ->required()
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state == 3) {
                             Notification::make()
-                                ->title('Attention')
-                                ->body('Une fois la facture marquée comme payée, elle ne pourra plus être modifiée ou supprimée.')
+                                ->title('Warning')
+                                ->body('Once the invoice is marked as paid, it can no longer be edited or deleted.')
                                 ->warning()
                                 ->persistent()
                                 ->send();
                         }
                     }),
                 Select::make('quote_id')
-                    ->label('Devis')
+                    ->label('Quote number')
                     ->options(function () {
                         return Quote::where('status_id', 2)
                             ->whereHas('quoteLines')
@@ -68,18 +68,18 @@ class InvoicesRelationManager extends RelationManager
                     ])
                     ->required(),
                 DatePicker::make('issue_date')
-                    ->label('date d\'émission de la facture')
+                    ->label('Invoice Issue Date')
                     ->required(),
 
                 DatePicker::make('due_date')
-                    ->label('Date d’échéance')
+                    ->label('Due Date')
                     ->required(),
 
                 DatePicker::make('payment_date')
-                    ->label('Date de paiement')
+                    ->label('Payment Date')
                     ->requiredIf('invoice_status_id', 3)
                     ->visible(fn (Forms\Get $get) => $get('invoice_status_id') == 3)
-                    ]);
+                ]);
     }
 
     public function table(Table $table): Table
@@ -93,7 +93,6 @@ class InvoicesRelationManager extends RelationManager
                     ->label('Total invoice lines (€)')
                     ->money('EUR', locale: 'fr_FR'),
                 TextColumn::make('due_date')
-                    ->label('Date d’échéance')
                     ->sortable()
                     ->color(function (Invoice $record) {
                         $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
@@ -101,10 +100,10 @@ class InvoicesRelationManager extends RelationManager
                     })
                     ->formatStateUsing(fn ($state) => \Carbon\Carbon::parse($state)->format('d/m/Y')),
                 TextColumn::make('due_date_status')
-                    ->label('En retard ?')
+                    ->label('is late ?')
                     ->getStateUsing(function (Invoice $record) {
                         $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
-                        return $isOverdue ? '⚠️ Oui' : 'Non';
+                        return $isOverdue ? '⚠️ yes' : 'No';
                     })
                     ->color(function (Invoice $record) {
                         $isOverdue = $record->due_date < now() && $record->invoice_status_id != 3;
@@ -170,8 +169,8 @@ class InvoicesRelationManager extends RelationManager
     {
         if ($this->record->invoice_status_id === 3) {
             Notification::make()
-                ->title('Cette facture est déjà payée')
-                ->body('Vous ne pouvez plus la modifier.')
+                ->title('This invoice is already paid')
+                ->body('You can no longer modify it.')
                 ->danger()
                 ->send();
 

@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
+    public function authorize($ability, $arguments = []): bool
+    {
+        return auth()->check() && auth()->user()->admin === 1;
+    }
 }

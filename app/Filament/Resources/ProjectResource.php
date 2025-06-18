@@ -48,7 +48,6 @@ class ProjectResource extends Resource
                 ->reactive(),
 
                 Select::make('customer_id')
-                    ->label('Client')
                     ->options(function () {
                         $user = Auth::user();
 
@@ -62,11 +61,9 @@ class ProjectResource extends Resource
                     ->required(),
 
                 DatePicker::make('date_started')
-                    ->label('Date de début')
                     ->required(fn (Get $get) => $get('status') !== 'prospect'),
 
                 DatePicker::make('date_end')
-                    ->label('Date de fin')
                     ->required(fn (Get $get) => in_array($get('status'), ['terminé', 'annulé'])),
             ]);
     }
@@ -89,11 +86,11 @@ class ProjectResource extends Resource
                         'red' => 'annulé',
                     ])
                     ->searchable(),
-                TextColumn::make('customer.name')->label('Client')->searchable(),
+                TextColumn::make('customer.name')->searchable(),
                 TextColumn::make('date_started')->date('d/m/Y à H:i'),
                 TextColumn::make('date_end')->date('d/m/Y à H:i'),
                 TextColumn::make('total_paid_invoices_amount')
-                    ->label('Total Factures Payées (€)')
+                    ->label('Total paid invoices (€)')
                     ->getStateUsing(fn (Project $record) => $record->total_paid_invoices_amount)
                     ->money('EUR', locale: 'fr_FR')
                     ->sortable(),

@@ -16,4 +16,9 @@ class EditUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    public function authorize($ability, $arguments = []): bool
+    {
+        return auth()->check() && auth()->user()->admin === 1;
+    }
 }
