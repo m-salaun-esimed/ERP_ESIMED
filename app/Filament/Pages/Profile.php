@@ -12,10 +12,10 @@ class Profile extends Page implements Forms\Contracts\HasForms
     use Forms\Concerns\InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-    protected static ?string $navigationGroup = 'My Account';
+    protected static ?string $navigationGroup = 'Mon Compte';  // traduit
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.profile';
-    protected static ?string $title = 'My Profile';
+    protected static ?string $title = 'Mon Profil';  // traduit
 
     public $name;
     public $first_name;
@@ -35,7 +35,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
             'name' => $user->name,
             'first_name' => $user->first_name,
             'second_name' => $user->second_name,
-            'birth_date' => $user->birth_date ? $user->birth_date->format('Y-m-d') : null, // HTML date format
+            'birth_date' => $user->birth_date ? $user->birth_date->format('Y-m-d') : null,
             'email' => $user->email,
             'phone_number' => $user->phone_number,
             'max_annual_revenue' => $user->max_annual_revenue,
@@ -48,20 +48,20 @@ class Profile extends Page implements Forms\Contracts\HasForms
     {
         return [
             Forms\Components\TextInput::make('name')
-                ->label('Last Name')
+                ->label('Nom')  // traduit
                 ->required()
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('first_name')
-                ->label('First Name')
+                ->label('Prénom')  // traduit
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('second_name')
-                ->label('Middle Name')
+                ->label('Deuxième prénom')  // traduit (ou "Deuxième nom" selon contexte)
                 ->maxLength(255),
 
             Forms\Components\DatePicker::make('birth_date')
-                ->label('Date of Birth'),
+                ->label('Date de naissance'),  // traduit
 
             Forms\Components\TextInput::make('email')
                 ->label('Email')
@@ -70,20 +70,20 @@ class Profile extends Page implements Forms\Contracts\HasForms
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('phone_number')
-                ->label('Phone Number')
+                ->label('Numéro de téléphone')  // traduit
                 ->tel()
                 ->maxLength(20),
 
             Forms\Components\TextInput::make('max_annual_revenue')
-                ->label('Max Annual Revenue')
+                ->label('Revenu annuel maximal')  // traduit
                 ->numeric(),
 
             Forms\Components\Textarea::make('address')
-                ->label('Address')
+                ->label('Adresse')  // traduit
                 ->rows(3),
 
             Forms\Components\TextInput::make('charge_rate')
-                ->label('Charge Rate')
+                ->label('Taux horaire')  // traduit
                 ->numeric(),
         ];
     }
@@ -107,7 +107,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
         $user->save();
 
         Notification::make()
-            ->title('Profile updated successfully.')
+            ->title('Profil mis à jour avec succès.')  // traduit
             ->success()
             ->send();
     }

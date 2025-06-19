@@ -31,24 +31,24 @@ class InvoiceLinesRelationManager extends RelationManager
             ->recordTitleAttribute('title')
             ->columns([
                 Tables\Columns\TextColumn::make('invoice.invoice_number')
-                    ->label('Invoice number'),
+                    ->label('Numéro de facture'),
                 Tables\Columns\TextColumn::make('invoice.payment_type')
-                    ->label('Payment Type'),
+                    ->label('Type de paiement'),
                 Tables\Columns\TextColumn::make('invoice.issue_date')
-                    ->label('Issue date'),  
+                    ->label('Date d\'émission'),
                 Tables\Columns\TextColumn::make('invoice.due_date')
-                    ->label('Due date'),
+                    ->label('Date d\'échéance'),
                 Tables\Columns\TextColumn::make('invoice.payment_date')
-                    ->label('Payement date'),                
+                    ->label('Date de paiement'),
                 Tables\Columns\TextColumn::make('description')
                     ->label('Description'),
                 Tables\Columns\TextColumn::make('quantity')
-                    ->label('Quantity'),
+                    ->label('Quantité'),
                 Tables\Columns\TextColumn::make('unit_price')
                     ->money('EUR', locale: 'fr_FR')
-                    ->label('Unite price'),
+                    ->label('Prix unitaire'),
                 Tables\Columns\TextColumn::make('line_total')
-                    ->label('Line Total (€)')
+                    ->label('Total ligne (€)')
                     ->money('EUR', locale: 'fr_FR')
                     ->sortable(),
             ])
@@ -62,11 +62,4 @@ class InvoiceLinesRelationManager extends RelationManager
             ->actions([
             ]);
     }
-
-    // public function getTableHeading(): string
-    // {
-    //     $invoice = $this->ownerRecord; // accès à l'enregistrement parent (Invoice)
-    //     return "Facture : {$invoice->invoice_number} - {$invoice->payment_type}";
-    // }
-
 }

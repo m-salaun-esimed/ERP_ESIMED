@@ -19,35 +19,35 @@ class QuoteLinesRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                TextInput::make('description')->required(),
-                TextInput::make('quantity')->numeric()->required(),
-                TextInput::make('unit_price')->numeric()->required(),
+                TextInput::make('description')->required()->label('Description'),
+                TextInput::make('quantity')->numeric()->required()->label('Quantité'),
+                TextInput::make('unit_price')->numeric()->required()->label('Prix unitaire'),
             ]);
     }
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute('description')
             ->columns([
-                Tables\Columns\TextColumn::make('description'),
-                Tables\Columns\TextColumn::make('quantity'),
-                Tables\Columns\TextColumn::make('unit_price'),
+                Tables\Columns\TextColumn::make('description')->label('Description'),
+                Tables\Columns\TextColumn::make('quantity')->label('Quantité'),
+                Tables\Columns\TextColumn::make('unit_price')->label('Prix unitaire'),
                 Tables\Columns\TextColumn::make('line_total')
-                    ->money('EUR', locale: 'fr_FR'),
+                    ->money('EUR', locale: 'fr_FR')
+                    ->label('Total ligne'),
             ])
             ->filters([
-                //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label('Créer'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->label('Modifier'),
+                Tables\Actions\DeleteAction::make()->label('Supprimer'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->label('Supprimer en masse'),
                 ]),
             ]);
     }

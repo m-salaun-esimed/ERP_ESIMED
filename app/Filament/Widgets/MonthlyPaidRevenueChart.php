@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class MonthlyPaidRevenueChart extends ChartWidget
 {
-    protected static ?string $heading = 'Monthly Paid Revenue';
+    protected static ?string $heading = 'Chiffre d\'affaires payé mensuel';
 
     public ?int $year = null;
 
@@ -25,28 +25,28 @@ class MonthlyPaidRevenueChart extends ChartWidget
     {
         $year = $this->year ?? now()->year;
 
-        // Calculate monthly revenues
+        // Calcul des revenus mensuels
         $revenues = [];
         for ($month = 1; $month <= 12; $month++) {
             $revenues[] = DB::table('invoices')
                 ->join('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-                ->where('invoices.invoice_status_id', 3)  // paid?
+                ->where('invoices.invoice_status_id', 3)  // factures payées
                 ->whereYear('invoices.payment_date', $year)
                 ->whereMonth('invoices.payment_date', $month)
                 ->sum('invoice_lines.line_total');
         }
 
-        // Labels: month names (French here)
+        // Labels : noms des mois en français
         $labels = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
+            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
         ];
 
         return [
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => "Paid revenue in $year",
+                    'label' => "Revenu payé en $year",
                     'data' => $revenues,
                     'backgroundColor' => [
                         '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE', '#DBEAFE', '#EFF6FF',

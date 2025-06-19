@@ -30,18 +30,19 @@ class QuoteResource extends Resource
     protected static ?string $model = Quote::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationLabel = 'Devis';
+    protected static ?string $label = 'Devis';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('status_id')
-                    ->label('Status quote')
+                    ->label('Statut du devis')
                     ->options(QuoteStatus::all()->pluck('name', 'id'))
                     ->required(),
 
                 Select::make('project_id')
-                    ->label('Project')
+                    ->label('Projet')
                     ->options(function () {
                         $user = Auth::user();
 
@@ -55,6 +56,7 @@ class QuoteResource extends Resource
                     ->default(now())
                     ->disabled()
                     ->dehydrated(true),
+
                 DatePicker::make('expires_on')
                     ->default(now()->addDays(30))
                     ->required()
@@ -62,27 +64,29 @@ class QuoteResource extends Resource
             ]);
     }
 
-
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('quote_number'),
-                TextColumn::make('project.name')->label('Project'),
+                TextColumn::make('quote_number')
+                    ->label('Numéro du devis'),
+                TextColumn::make('project.name')
+                    ->label('Projet'),
                 TextColumn::make('statusQuote.name')
-                    ->label('Status'),
+                    ->label('Statut'),
                 TextColumn::make('created_at')
-                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y'))
+                    ->label('Date de création'),
                 TextColumn::make('expires_on')
-                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),
+                    ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y'))
+                    ->label('Date d\'expiration'),
                 TextColumn::make('total_cost')
                     ->label('Total')
                     ->money('EUR', locale: 'fr_FR'),
             ])
             ->filters([
                 SelectFilter::make('project_id')
-                    ->label('Project')
+                    ->label('Projet')
                     ->options(function () {
                         $user = Auth::user();
                         return Project::whereHas('customer', function ($query) use ($user) {
@@ -90,18 +94,19 @@ class QuoteResource extends Resource
                         })->pluck('name', 'id');
                     }),
 
-                Tables\Filters\SelectFilter::make('status_id')
-                    ->label('Status')
+                SelectFilter::make('status_id')
+                    ->label('Statut')
                     ->options(QuoteStatus::all()->pluck('name', 'id')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->visible(fn (Quote $record) => $record->status_id != 2),
-                Tables\Actions\Action::make('View')
+                Tables\Actions\Action::make('Voir')
                     ->icon('heroicon-o-eye')
                     ->url(fn ($record) => ViewQuote::getUrl(['record' => $record->getKey()])),
             ])
             ->bulkActions([
+                // Pas d'actions groupées pour l'instant
             ]);
     }
 
@@ -118,18 +123,17 @@ class QuoteResource extends Resource
             'index' => Pages\ListQuotes::route('/'),
             'create' => Pages\CreateQuote::route('/create'),
             'edit' => Pages\EditQuote::route('/{record}/edit'),
-            'view' => Pages\ViewQuote::route('/{record}/view')
+            'view' => Pages\ViewQuote::route('/{record}/view'),
         ];
     }
 
-
-        public static function getEloquentQuery(): Builder
-        {
-            return parent::getEloquentQuery()
-                ->whereHas('project.customer', function (Builder $query) {
-                    $query->where('user_id', Auth::id());
-                });
-        }
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('project.customer', function (Builder $query) {
+                $query->where('user_id', Auth::id());
+            });
+    }
 
     public static function getNavigationSort(): int
     {

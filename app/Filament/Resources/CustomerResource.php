@@ -27,91 +27,102 @@ class CustomerResource extends Resource
     protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-
+    protected static ?string $navigationLabel = 'Clients';
+    protected static ?string $label = 'Clients';
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->label('Nom')
                     ->required(),
                 TextInput::make('contact_name')
+                    ->label('Nom du contact')
                     ->required(),
                 TextInput::make('address')
+                    ->label('Adresse')
                     ->required(),
                 TextInput::make('phone_number')
+                    ->label('Numéro de téléphone')
                     ->tel()
                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
                     ->required(),
                 TextInput::make('email')
+                    ->label('Email')
                     ->email()
                     ->required(),
                 TextInput::make('city')
+                    ->label('Ville')
                     ->required(),
             ]);
     }
 
     public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            TextColumn::make('name')->searchable(),
-            TextColumn::make('contact_name')->searchable(),
-            TextColumn::make('phone_number')->searchable(),
-            TextColumn::make('email')->searchable(),
-            TextColumn::make('address')->searchable(),
-        ])
-        ->actions([
-            Tables\Actions\Action::make('View')
-                ->icon('heroicon-o-eye')
-                ->url(fn ($record) => ViewCustomer::getUrl(['record' => $record->getKey()])),
-            Tables\Actions\EditAction::make(),
+    {
+        return $table
+            ->columns([
+                TextColumn::make('name')->label('Nom')->searchable(),
+                TextColumn::make('contact_name')->label('Nom du contact')->searchable(),
+                TextColumn::make('phone_number')->label('Téléphone')->searchable(),
+                TextColumn::make('email')->label('Email')->searchable(),
+                TextColumn::make('address')->label('Adresse')->searchable(),
+            ])
+            ->actions([
+                Tables\Actions\Action::make('View')
+                    ->label('Voir')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn ($record) => ViewCustomer::getUrl(['record' => $record->getKey()])),
+                Tables\Actions\EditAction::make()
+                    ->label('Modifier'),
 
-            DeleteAction::make()
+                DeleteAction::make()
+                    ->label('Supprimer')
                     ->action(function ($record) {
-                       try {
+                        try {
                             $record->delete();
                             Notification::make()
-                                ->title('Customer deleted')
+                                ->title('Client supprimé')
                                 ->success()
                                 ->send();
                         } catch (\Exception $e) {
                             Notification::make()
-                                ->title('Deletion failed')
+                                ->title('Échec de la suppression')
                                 ->body($e->getMessage())
                                 ->danger()
                                 ->send();
                         }
                     }),
-        ])
-        ->bulkActions([
-            Tables\Actions\BulkAction::make('supprimer_clients')
-                ->label('Delete customers')
-                ->action(function ($records) {
-                    foreach ($records as $record) {
-                    try {
-                        $record->delete();
-                    } catch (\Exception $e) {
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkAction::make('supprimer_clients')
+                    ->label('Supprimer les clients')
+                    ->action(function ($records) {
+                        foreach ($records as $record) {
+                            try {
+                                $record->delete();
+                            } catch (\Exception $e) {
+                                Notification::make()
+                                    ->title("Erreur lors de la suppression")
+                                    ->body("Impossible de supprimer le client \"{$record->name}\" : {$e->getMessage()}")
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+                        }
+
                         Notification::make()
-                            ->title("Error during deletion")
-                            ->body("Unable to delete customer \"{$record->name}\": {$e->getMessage()}")
-                            ->danger()
+                            ->title("Clients supprimés")
+                            ->success()
                             ->send();
-
-                        return;
-                    }
-                    }
-
-                    Notification::make()
-                        ->title("Customer deleted")
-                        ->success()
-                        ->send();
-                })
-                ->deselectRecordsAfterCompletion()
-                ->requiresConfirmation()
-                ->color('danger')
-                ->icon('heroicon-o-trash'),
-        ]);
-}
+                    })
+                    ->deselectRecordsAfterCompletion()
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->icon('heroicon-o-trash'),
+            ]);
+    }
 
     public static function getRelations(): array
     {
@@ -127,7 +138,7 @@ class CustomerResource extends Resource
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
-            'view' => Pages\ViewCustomer::route('/{record}')
+            'view' => Pages\ViewCustomer::route('/{record}'),
         ];
     }
 
@@ -141,5 +152,4 @@ class CustomerResource extends Resource
     {
         return 1;
     }
-
 }

@@ -30,24 +30,29 @@ class ProjectResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
+    protected static ?string $navigationLabel = 'Projets';
+
+    protected static ?string $label = 'Projets';
     
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('name')
+                    ->label('Nom du projet')
                     ->required(),
 
-            Select::make('status_project_id')
-                ->label('Status')
-                ->options(function () {
-                    return ProjectStatus::pluck('name', 'id')->toArray();
-                })
-                ->searchable(false)
-                ->required()
-                ->reactive(),
+                Select::make('status_project_id')
+                    ->label('Statut')
+                    ->options(function () {
+                        return ProjectStatus::pluck('name', 'id')->toArray();
+                    })
+                    ->searchable(false)
+                    ->required()
+                    ->reactive(),
 
                 Select::make('customer_id')
+                    ->label('Client')
                     ->options(function () {
                         $user = Auth::user();
 
@@ -61,21 +66,25 @@ class ProjectResource extends Resource
                     ->required(),
 
                 DatePicker::make('date_started')
+                    ->label('Date de début')
                     ->required(fn (Get $get) => $get('status') !== 'prospect'),
 
                 DatePicker::make('date_end')
+                    ->label('Date de fin')
                     ->required(fn (Get $get) => in_array($get('status'), ['terminé', 'annulé'])),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')
+                    ->label('Nom du projet')
+                    ->searchable(),
+
                 TextColumn::make('statusProject.name')
-                    ->label('Status')
+                    ->label('Statut')
                     ->badge()
                     ->colors([
                         'gray' => 'prospect',
@@ -86,19 +95,28 @@ class ProjectResource extends Resource
                         'red' => 'annulé',
                     ])
                     ->searchable(),
-                TextColumn::make('customer.name')->searchable(),
-                TextColumn::make('date_started')->date('d/m/Y à H:i'),
-                TextColumn::make('date_end')->date('d/m/Y à H:i'),
+
+                TextColumn::make('customer.name')
+                    ->label('Client')
+                    ->searchable(),
+
+                TextColumn::make('date_started')
+                    ->label('Date de début')
+                    ->date('d/m/Y à H:i'),
+
+                TextColumn::make('date_end')
+                    ->label('Date de fin')
+                    ->date('d/m/Y à H:i'),
+
                 TextColumn::make('total_paid_invoices_amount')
-                    ->label('Total paid invoices (€)')
+                    ->label('Total factures payées (€)')
                     ->getStateUsing(fn (Project $record) => $record->total_paid_invoices_amount)
                     ->money('EUR', locale: 'fr_FR')
                     ->sortable(),
-
             ])
             ->filters([
                 SelectFilter::make('status_project_id')
-                    ->label('Status')
+                    ->label('Statut')
                     ->options(function () {
                         return ProjectStatus::pluck('name', 'id')->toArray();
                     })
@@ -107,7 +125,7 @@ class ProjectResource extends Resource
                     }),
 
                 SelectFilter::make('customer_id')
-                    ->label('Customers')
+                    ->label('Clients')
                     ->options(function () {
                         $user = Auth::user();
 
@@ -119,17 +137,16 @@ class ProjectResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\Action::make('View')
-                            ->icon('heroicon-o-eye')
-                            ->url(fn ($record) => ViewProject::getUrl(['record' => $record->getKey()])),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Voir')
+                    ->label('Voir')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn ($record) => ViewProject::getUrl(['record' => $record->getKey()])),
+                Tables\Actions\EditAction::make()
+                    ->label('Modifier'),
             ])
             ->recordUrl(null)
-            ->bulkActions([
-            ]);
+            ->bulkActions([]);
     }
-
-
 
     public static function getRelations(): array
     {
@@ -161,5 +178,4 @@ class ProjectResource extends Resource
     {
         return 2;
     }
-
 }
