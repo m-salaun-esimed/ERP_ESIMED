@@ -1,50 +1,50 @@
-version: '3.8'
+  version: '3.8'
 
-services:
-  mysql:
-    image: mysql:8.0
-    container_name: laravel_mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: erm
-      # Supprimez ces deux lignes car on ne peut pas créer un utilisateur "root"
-      # MYSQL_USER: root
-      # MYSQL_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - laravel_network
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  services:
+    mysql:
+      image: mysql:8.0
+      container_name: laravel_mysql
+      restart: unless-stopped
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: erm
+        # Supprimez ces deux lignes car on ne peut pas créer un utilisateur "root"
+        # MYSQL_USER: root
+        # MYSQL_PASSWORD: root
+      ports:
+        - "3306:3306"
+      volumes:
+        - mysql_data:/var/lib/mysql
+      networks:
+        - laravel_network
+      command: --default-authentication-plugin=mysql_native_password
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: laravel_phpmyadmin
-    restart: unless-stopped
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      # Supprimez PMA_USER et PMA_PASSWORD pour permettre la connexion manuelle
-      PMA_ARBITRARY: 1
-    ports:
-      - "8080:80"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - laravel_network
+    phpmyadmin:
+      image: phpmyadmin:latest
+      container_name: laravel_phpmyadmin
+      restart: unless-stopped
+      environment:
+        PMA_HOST: mysql
+        PMA_PORT: 3306
+        # Supprimez PMA_USER et PMA_PASSWORD pour permettre la connexion manuelle
+        PMA_ARBITRARY: 1
+      ports:
+        - "8080:80"
+      depends_on:
+        mysql:
+          condition: service_healthy
+      networks:
+        - laravel_network
 
-volumes:
-  mysql_data:
-    driver: local
+  volumes:
+    mysql_data:
+      driver: local
 
-networks:
-  laravel_network:
-    driver: bridge
+  networks:
+    laravel_network:
+      driver: bridge

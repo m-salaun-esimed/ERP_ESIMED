@@ -22,9 +22,9 @@ class LoginUserTest extends TestCase
             'password' => 'password123',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/dashboard'); // ou '/' selon ta config
 
-        $this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user, 'web');
     }
 
     public function test_user_cannot_login_with_wrong_password()
@@ -39,8 +39,9 @@ class LoginUserTest extends TestCase
             'password' => 'wrongpassword',
         ]);
 
-        $response->assertStatus(302);
+        $response->assertStatus(302); // redirection après échec login
 
-        $this->assertGuest();
+        $this->assertGuest('filament'); // ou 'web' si c’est ton guard
     }
+
 }
