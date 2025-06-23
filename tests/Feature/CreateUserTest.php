@@ -17,6 +17,7 @@ class CreateUserTest extends TestCase
             'password' => bcrypt('password'),
         ]); 
 
+        
         $this->assertDatabaseHas('users', [
             'email' => 'testuser@example.com',
         ]);
