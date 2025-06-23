@@ -1,47 +1,50 @@
-name: Tests
+name: Run Laravel Tests
 
 on:
   push:
-    branches:
-      - master
-      - '*.x'
+    branches: [ "main", "develop" ]
   pull_request:
-  schedule:
-    - cron: '0 0 * * *'
-
-permissions:
-  contents: read
+    branches: [ "*" ]
 
 jobs:
-  tests:
+  laravel-tests:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: true
-      matrix:
-        php: [8.2, 8.3, 8.4]
-
-    name: PHP ${{ matrix.php }}
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
+          php-version: '8.3'
+          extensions: mbstring, pdo, pdo_mysql, xml, bcmath
           coverage: none
 
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Copy .env.testing
+        run: cp .env.testing .env
 
-      - name: Copy environment file
-        run: cp .env.example .env
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist
 
       - name: Generate app key
         run: php artisan key:generate
 
-      - name: Execute tests
-        run: php artisan test
+      - name: Run migrations
+        run: php artisan migrate --env=testing --force
+
+      - name: Run PHPUnit tests
+        run: php artisan test --env=testing
