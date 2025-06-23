@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('second_name')->nullable();
             $table->date('birth_date')->nullable();
             $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable(); // <-- ajout ici
             $table->string('phone_number')->nullable();
             $table->bigInteger('max_annual_revenue')->nullable();
             $table->string('password');
