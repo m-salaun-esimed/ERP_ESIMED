@@ -82,20 +82,49 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'url' => env('DB_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => env('DB_CHARSET', 'utf8'),
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => 'prefer',
-        ],
+'pgsql' => [
+    'driver' => 'pgsql',
+    'host' => env('DB_HOST', function () {
+        $relationships = json_decode(env('PLATFORM_RELATIONSHIPS', '{}'), true);
+        if (!empty($relationships['postgresql'][0]['host'])) {
+            return $relationships['postgresql'][0]['host'];
+        }
+        return '127.0.0.1';
+    }),
+    'port' => env('DB_PORT', function () {
+        $relationships = json_decode(env('PLATFORM_RELATIONSHIPS', '{}'), true);
+        if (!empty($relationships['postgresql'][0]['port'])) {
+            return $relationships['postgresql'][0]['port'];
+        }
+        return '5432';
+    }),
+    'database' => env('DB_DATABASE', function () {
+        $relationships = json_decode(env('PLATFORM_RELATIONSHIPS', '{}'), true);
+        if (!empty($relationships['postgresql'][0]['path'])) {
+            return ltrim($relationships['postgresql'][0]['path'], '/');
+        }
+        return 'forge';
+    }),
+    'username' => env('DB_USERNAME', function () {
+        $relationships = json_decode(env('PLATFORM_RELATIONSHIPS', '{}'), true);
+        if (!empty($relationships['postgresql'][0]['username'])) {
+            return $relationships['postgresql'][0]['username'];
+        }
+        return 'forge';
+    }),
+    'password' => env('DB_PASSWORD', function () {
+        $relationships = json_decode(env('PLATFORM_RELATIONSHIPS', '{}'), true);
+        if (!empty($relationships['postgresql'][0]['password'])) {
+            return $relationships['postgresql'][0]['password'];
+        }
+        return '';
+    }),
+    'charset' => 'utf8',
+    'prefix' => '',
+    'schema' => 'public',
+    'sslmode' => 'prefer',
+],
+
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
