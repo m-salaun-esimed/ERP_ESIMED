@@ -14,6 +14,7 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 class InvoiceLinesRelationManager extends RelationManager
 {
     protected static string $relationship = 'invoiceLines';
+    protected static ?string $title = 'Lignes de la facture';
 
     public function form(Form $form): Form
     {

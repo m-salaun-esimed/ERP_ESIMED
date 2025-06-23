@@ -32,6 +32,9 @@ use Carbon\Carbon;
 class QuotesRelationManager extends RelationManager
 {
     protected static string $relationship = 'quotes';
+    protected static ?string $title = 'Devis';
+    protected static ?string $modelLabel       = 'Devis';
+    protected static ?string $pluralModelLabel = 'Devis';
     public static function getLabel(): string
     {
         return 'Devis';

@@ -23,8 +23,9 @@ use Illuminate\Support\Facades\Auth;
 class ProjectsRelationManager extends RelationManager
 {
     protected static string $relationship = 'projects';
-    protected static ?string $label = 'Projets';
-    
+    protected static ?string $title = 'Projets';
+    protected static ?string $modelLabel       = 'Projet';
+    protected static ?string $pluralModelLabel = 'Projets';
     public function form(Form $form): Form
     {
         return $form

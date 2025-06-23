@@ -28,7 +28,9 @@ use Carbon\Carbon;
 class InvoicesRelationManager extends RelationManager
 {
     protected static string $relationship = 'invoices';
-
+    protected static ?string $title = 'Factures';
+    protected static ?string $modelLabel       = 'Facture';
+    protected static ?string $pluralModelLabel = 'Factures';
     public function form(Form $form): Form
     {
         return $form

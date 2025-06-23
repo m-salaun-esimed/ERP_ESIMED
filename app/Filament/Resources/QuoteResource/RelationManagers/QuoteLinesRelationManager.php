@@ -14,7 +14,9 @@ use Filament\Forms\Components\TextInput;
 class QuoteLinesRelationManager extends RelationManager
 {
     protected static string $relationship = 'quoteLines';
-
+    protected static ?string $title = 'Lignes du devis';
+    protected static ?string $modelLabel       = 'Devis';
+    protected static ?string $pluralModelLabel = 'Devis';
     public function form(Form $form): Form
     {
         return $form
