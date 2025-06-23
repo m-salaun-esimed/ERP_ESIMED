@@ -29,7 +29,7 @@ class AnnualSummary extends StatsOverviewWidget
             Card::make('Paiements en attente', number_format($enAttente, 2, ',', ' ') . ' €'),
             Card::make('Factures non envoyées', number_format($nonEnvoyees, 2, ',', ' ') . ' €'),
             Card::make('Objectif annuel', number_format($objectifCA, 2, ',', ' ') . ' €'),
-            Card::make('Revenu restant', number_format($resteAFaire, 2, ',', ' ') . ' €'),
+            Card::make('Restant à faire', number_format($resteAFaire, 2, ',', ' ') . ' €'),
         ];
     }
 }

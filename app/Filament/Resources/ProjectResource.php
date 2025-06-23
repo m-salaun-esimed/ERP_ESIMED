@@ -121,7 +121,7 @@ class ProjectResource extends Resource
                         return ProjectStatus::pluck('name', 'id')->toArray();
                     })
                     ->default(function () {
-                        return ProjectStatus::where('name', 'démarré')->value('id');
+                        return ProjectStatus::where('name', 'en cours')->value('id');
                     }),
 
                 SelectFilter::make('customer_id')

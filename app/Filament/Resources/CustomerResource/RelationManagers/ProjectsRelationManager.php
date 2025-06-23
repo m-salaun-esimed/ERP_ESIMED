@@ -87,18 +87,6 @@ class ProjectsRelationManager extends RelationManager
                     ->default(function () {
                         return ProjectStatus::where('name', 'démarré')->value('id');
                     }),
-
-                SelectFilter::make('customer_id')
-                    ->label('Clients')
-                    ->options(function () {
-                        $user = Auth::user();
-
-                        if (!$user) {
-                            return [];
-                        }
-
-                        return $user->customers()->pluck('name', 'id')->toArray();
-                    }),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label('Créer')

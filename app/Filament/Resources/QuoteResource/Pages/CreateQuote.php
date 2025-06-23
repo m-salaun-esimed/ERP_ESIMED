@@ -17,7 +17,7 @@ class CreateQuote extends CreateRecord
         if ($statusId == 2 || $statusId == 1) {
             Notification::make()
                 ->title('Error')
-                ->body('You cannot create a quote that is already accepted or sent. Please add lines first.')
+                ->body('Vous ne pouvez pas créer un devis qui est déjà accepté ou envoyé. Veuillez d\'abord ajouter des lignes.')
                 ->danger()
                 ->send();
 

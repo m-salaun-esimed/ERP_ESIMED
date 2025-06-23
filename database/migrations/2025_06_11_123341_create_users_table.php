@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->bigInteger('charge_rate')->nullable();
             $table->boolean('admin')->nullable();
+            $table->rememberToken()->nullable();
             $table->timestamps();
         });
     }

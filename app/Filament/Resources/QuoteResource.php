@@ -99,11 +99,11 @@ class QuoteResource extends Resource
                     ->options(QuoteStatus::all()->pluck('name', 'id')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->visible(fn (Quote $record) => $record->status_id != 2),
                 Tables\Actions\Action::make('Voir')
                     ->icon('heroicon-o-eye')
                     ->url(fn ($record) => ViewQuote::getUrl(['record' => $record->getKey()])),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (Quote $record) => $record->status_id != 2),
             ])
             ->bulkActions([
                 // Pas d'actions groupées pour l'instant

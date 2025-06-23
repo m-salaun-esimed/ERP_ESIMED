@@ -33,31 +33,5 @@ class DatabaseSeeder extends Seeder
             ['name' => 'envoyée'],
             ['name' => 'payée'],
         ]);
-
-        // Clients
-        DB::table('customers')->insert([
-            [
-                'name' => 'ESIMED',
-                'contact_name' => 'sent',
-                'address' => '73 marseille',
-                'email' => 'hmichelon@esimed.fr',
-                'phone_number' => '0658718700',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
-
-        // Projects
-        DB::table('projects')->insert([
-            [
-                'status_project_id' => 4,
-                'customer_id' => 1,
-                'name' => 'ERP',
-                'date_started' => '2025-06-17',
-                'date_end' => '2025-06-17 11:01:45',
-                'created_at' => '2025-06-17 11:01:45',
-                'updated_at' => '2025-06-17 11:01:45',
-            ]
-        ]);
     }
 }

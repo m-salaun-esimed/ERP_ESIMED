@@ -31,7 +31,7 @@ class QuoteLinesRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('description')->label('Description'),
                 Tables\Columns\TextColumn::make('quantity')->label('Quantité'),
-                Tables\Columns\TextColumn::make('unit_price')->label('Prix unitaire'),
+                Tables\Columns\TextColumn::make('unit_price')->label('Prix unitaire')->money('EUR', locale: 'fr_FR'),
                 Tables\Columns\TextColumn::make('line_total')
                     ->money('EUR', locale: 'fr_FR')
                     ->label('Total ligne'),

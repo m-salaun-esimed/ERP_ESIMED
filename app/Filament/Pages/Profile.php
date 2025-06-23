@@ -12,10 +12,10 @@ class Profile extends Page implements Forms\Contracts\HasForms
     use Forms\Concerns\InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-    protected static ?string $navigationGroup = 'Mon Compte';  // traduit
+    protected static ?string $navigationGroup = 'Mon Compte';
     protected static ?int $navigationSort = 1;
     protected static string $view = 'filament.pages.profile';
-    protected static ?string $title = 'Mon Profil';  // traduit
+    protected static ?string $title = 'Mon Profil';
 
     public $name;
     public $first_name;
@@ -48,20 +48,20 @@ class Profile extends Page implements Forms\Contracts\HasForms
     {
         return [
             Forms\Components\TextInput::make('name')
-                ->label('Nom')  // traduit
+                ->label('Nom')
                 ->required()
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('first_name')
-                ->label('Prénom')  // traduit
+                ->label('Prénom')
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('second_name')
-                ->label('Deuxième prénom')  // traduit (ou "Deuxième nom" selon contexte)
+                ->label('Nom')
                 ->maxLength(255),
 
             Forms\Components\DatePicker::make('birth_date')
-                ->label('Date de naissance'),  // traduit
+                ->label('Date de naissance'),
 
             Forms\Components\TextInput::make('email')
                 ->label('Email')
@@ -70,20 +70,20 @@ class Profile extends Page implements Forms\Contracts\HasForms
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('phone_number')
-                ->label('Numéro de téléphone')  // traduit
+                ->label('Numéro de téléphone')
                 ->tel()
                 ->maxLength(20),
 
             Forms\Components\TextInput::make('max_annual_revenue')
-                ->label('Revenu annuel maximal')  // traduit
+                ->label('Revenu annuel maximal')
                 ->numeric(),
 
             Forms\Components\Textarea::make('address')
-                ->label('Adresse')  // traduit
+                ->label('Adresse')
                 ->rows(3),
 
             Forms\Components\TextInput::make('charge_rate')
-                ->label('Taux horaire')  // traduit
+                ->label('taux de charges en %')
                 ->numeric(),
         ];
     }
@@ -107,7 +107,7 @@ class Profile extends Page implements Forms\Contracts\HasForms
         $user->save();
 
         Notification::make()
-            ->title('Profil mis à jour avec succès.')  // traduit
+            ->title('Profil mis à jour avec succès.')
             ->success()
             ->send();
     }
