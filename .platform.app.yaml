@@ -10,7 +10,7 @@ web:
   locations:
     '/':
       root: 'public'
-      index: 'index.php'
+      index: ['index.php']
       passthru: '/index.php'
 
 mounts:
@@ -26,16 +26,16 @@ relationships:
 
 dependencies:
   php:
-    - ext-pdo
-    - ext-pgsql
-    - ext-pdo_pgsql
-    - ext-mbstring
-    - ext-openssl
-    - ext-ctype
-    - ext-tokenizer
-    - ext-dom
-    - ext-fileinfo
-    - ext-curl
+    ext-pdo: '*'
+    ext-pgsql: '*'
+    ext-pdo_pgsql: '*'
+    ext-mbstring: '*'
+    ext-openssl: '*'
+    ext-ctype: '*'
+    ext-tokenizer: '*'
+    ext-dom: '*'
+    ext-fileinfo: '*'
+    ext-curl: '*'
 
 hooks:
   build: |
