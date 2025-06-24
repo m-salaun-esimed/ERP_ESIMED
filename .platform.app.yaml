@@ -24,19 +24,6 @@ mounts:
 relationships:
   postgresql: 'postgresql:postgresql'
 
-dependencies:
-  php:
-    ext-pdo: '*'
-    ext-pgsql: '*'
-    ext-pdo_pgsql: '*'
-    ext-mbstring: '*'
-    ext-openssl: '*'
-    ext-ctype: '*'
-    ext-tokenizer: '*'
-    ext-dom: '*'
-    ext-fileinfo: '*'
-    ext-curl: '*'
-
 hooks:
   build: |
     echo "Build terminé"
