@@ -21,7 +21,7 @@ hooks:
     php artisan view:cache
     php artisan migrate --force
 relationships:
-  database: "db:pgsql"
+  database: "db:postgresql"
   rediscache: "cache:redis"
   redissession: "cache:redis"
 disk: 2048
