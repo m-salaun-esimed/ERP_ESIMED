@@ -1,47 +1,70 @@
 name: app
-type: 'php:8.4'
-
-disk: 2048
-
-build:
-  flavor: composer
-
-web:
-  locations:
-    '/':
-      root: 'public'
-      index: ['index.php']
-      passthru: '/index.php'
-
-mounts:
-  '/storage':
-    source: local
-    source_path: storage
-  '/public/uploads':
-    source: local
-    source_path: uploads
-
-relationships:
-  database: 'postgresql:postgresql'
-
-hooks:
-  build: |
-    echo "Build terminé"
-  deploy: |
-    php artisan migrate:fresh --seed --force
-    php artisan config:cache
-    php artisan route:cache
-    php artisan view:cache
-
+type: php:8.0
 dependencies:
   php:
-    ext-pdo: '*'
-    ext-pgsql: '*'
-    ext-pdo_pgsql: '*'
-    ext-mbstring: '*'
-    ext-openssl: '*'
-    ext-ctype: '*'
-    ext-tokenizer: '*'
-    ext-dom: '*'
-    ext-fileinfo: '*'
-    ext-curl: '*'
+    composer/composer: '^2'
+runtime:
+  extensions:
+    - redis
+build:
+  flavor: composer
+variables:
+  env:
+    N_PREFIX: /app/.global
+hooks:
+  deploy: |
+    set -e
+    php artisan optimize:clear
+    php artisan optimize
+    php artisan view:cache
+    php artisan migrate --force
+relationships:
+  database: "db:mysql"
+  rediscache: "cache:redis"
+  redissession: "cache:redis"
+disk: 2048
+mounts:
+  "storage/app/public":
+    source: local
+    source_path: "public"
+  "storage/framework/views":
+    source: local
+    source_path: "views"
+  "storage/framework/sessions":
+    source: local
+    source_path: "sessions"
+  "storage/framework/cache":
+    source: local
+    source_path: "cache"
+  "storage/logs":
+    source: local
+    source_path: "logs"
+  "bootstrap/cache":
+    source: local
+    source_path: "cache"
+  "/.config":
+    source: local
+    source_path: "config"
+web:
+  locations:
+    "/":
+      root: "public"
+      index:
+        - index.php
+      allow: true
+      passthru: "/index.php"
+    "/storage":
+      root: "storage/app/public"
+      scripts: false
+workers:
+  queue:
+    size: S
+    commands:
+      start: |
+        php artisan queue:work --max-time=3600
+    disk: 256
+  scheduler:
+    size: S
+    commands:
+      start: php artisan schedule:work
+    disk: 256

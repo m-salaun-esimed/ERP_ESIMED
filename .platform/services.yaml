@@ -1,3 +1,6 @@
-postgresql:
-  type: postgresql:17
-  disk: 256
+db:
+  type: mysql:10.4
+  disk: 1024
+cache:
+  type: redis:5.0
+  disk: 512
