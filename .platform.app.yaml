@@ -1,11 +1,13 @@
 name: app
-type: php:8.0
+type: php:8.2
 dependencies:
   php:
     composer/composer: '^2'
 runtime:
   extensions:
     - redis
+    - pgsql
+    - pdo_pgsql
 build:
   flavor: composer
 variables:
@@ -19,7 +21,7 @@ hooks:
     php artisan view:cache
     php artisan migrate --force
 relationships:
-  database: "db:mysql"
+  database: "db:pgsql"
   rediscache: "cache:redis"
   redissession: "cache:redis"
 disk: 2048
