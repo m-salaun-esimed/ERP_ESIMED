@@ -3,4 +3,3 @@ db:
   disk: 1024
 cache:
   type: redis:5.0
-  disk: 512
