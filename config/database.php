@@ -7,6 +7,7 @@ $relationships = json_decode(base64_decode(env('PLATFORM_RELATIONSHIPS', '')), t
 
 // Extract services if available
 $mysqlConfig        = $relationships['database'][0]     ?? null;
+dd($mysqlConfig);
 $redisCacheConfig   = $relationships['rediscache'][0]    ?? null;
 $redisSessionConfig = $relationships['redissession'][0]  ?? null;
 
@@ -31,7 +32,7 @@ return [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', $mysqlConfig['host'] ?? '127.0.0.1'),
             'port'        => env('DB_PORT', $mysqlConfig['port'] ?? 3306),
-            'database'    => env('DB_DATABASE', $mysqlConfig['path'] ?? 'laravel'),
+            'database'    => env('DB_DATABASE', $mysqlConfig['path'] ?? 'laravel', '/'),
             'username'    => env('DB_USERNAME', $mysqlConfig['username'] ?? 'root'),
             'password'    => env('DB_PASSWORD', $mysqlConfig['password'] ?? ''),
             'unix_socket' => env('DB_SOCKET', ''),
