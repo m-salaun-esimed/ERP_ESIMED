@@ -22,7 +22,6 @@ variables:
     env:
         N_PREFIX: /app/.global
 
-# The hooks that will be performed when the package is deployed.
 hooks:
     build: |
         set -e
