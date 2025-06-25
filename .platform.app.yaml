@@ -24,6 +24,9 @@ variables:
         APP_KEY: "base64:68PBtWYb5g3J0Ln8GTM+6imoVvdgpYsPFPcUqO68sas="
         DB_CONNECTION: mysql
         APP_DEBUG: "true"
+        APP_LOCALE: fr
+        APP_FALLBACK_LOCALE: fr
+        APP_FAKER_LOCALE: en_US
         # DB_PORT: 3306
         # DB_DATABASE: "erp"
         # DB_USERNAME: "user"
