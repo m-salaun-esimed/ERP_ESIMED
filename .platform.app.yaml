@@ -21,6 +21,7 @@ build:
 variables:
     env:
         N_PREFIX: /app/.global
+        APP_KEY: "base64:68PBtWYb5g3J0Ln8GTM+6imoVvdgpYsPFPcUqO68sas="
 
 hooks:
     build: |
@@ -115,4 +116,4 @@ source:
   operations:
     auto-update:
       command: |
-        curl -fsS https://raw.githubusercontent.com/platformsh/source-operations/main/setup.sh | { bash /dev/fd/3 sop-autoupdate; } 3<&0
+        curl -fsS https://raw.githubusercontent.com/platformsh/source-operations/main/setup.sh | { bash /dev/fd/3 sop-autoupdate; } 3<&0  
