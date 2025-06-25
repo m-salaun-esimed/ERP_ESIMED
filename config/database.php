@@ -6,15 +6,15 @@ use Illuminate\Support\Str;
 $relationships = json_decode(base64_decode(env('PLATFORM_RELATIONSHIPS', '')), true);
 
 // Extract services if available
-$mysqlConfig        = $relationships['database'][0]     ?? null;
+$mysqlConfig        = $relationships['mariadb'][0] ?? null;
 dd($mysqlConfig);
-$redisCacheConfig   = $relationships['rediscache'][0]    ?? null;
-$redisSessionConfig = $relationships['redissession'][0]  ?? null;
+$redisCacheConfig   = $relationships['rediscache'][0] ?? null;
+$redisSessionConfig = $relationships['redissession'][0] ?? null;
 
 return [
 
     // Default DB connection
-    'default' => env('DB_CONNECTION', 'mariadb'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     'connections' => [
 
