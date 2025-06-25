@@ -48,7 +48,8 @@ return [
         ],
         'mysql' => [
             'driver' => 'mysql',
-            'hosts' => [$mysqlHost],
+            // 'hosts' => [$mysqlHost],
+            'host' => $mysqlHost,
             'port' => $mysqlPort,
             'database' => $mysqlDatabase,
             'username' => $mysqlUsername,
