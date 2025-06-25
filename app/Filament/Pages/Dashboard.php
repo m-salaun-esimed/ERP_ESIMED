@@ -12,7 +12,7 @@ class Dashboard extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static string $view = 'filament.pages.dashboard';
-    protected static ?string $title = 'Tableau de bord'; // Titre en français
+    protected static ?string $title = 'Tableau de bord'; // Titre en français 
 
     public function getHeaderWidgets(): array
     {
