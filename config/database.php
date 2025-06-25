@@ -7,7 +7,6 @@ $relationships = json_decode(base64_decode(env('PLATFORM_RELATIONSHIPS', '')), t
 
 // Extract services if available
 $mysqlConfig        = $relationships['mariadb'][0] ?? null;
-dd($mysqlConfig);
 $redisCacheConfig   = $relationships['rediscache'][0] ?? null;
 $redisSessionConfig = $relationships['redissession'][0] ?? null;
 
