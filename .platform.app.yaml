@@ -24,12 +24,11 @@ variables:
         APP_KEY: "base64:68PBtWYb5g3J0Ln8GTM+6imoVvdgpYsPFPcUqO68sas="
         DB_CONNECTION: mysql
         APP_DEBUG: "true"
-        DB_HOST: "127.0.0.1"
         DB_PORT: 3306
         DB_DATABASE: "erp"
         DB_USERNAME: "user"
         DB_PASSWORD: ""
-
+        DB_HOST: "db.internal"
 
 hooks:
     build: |
