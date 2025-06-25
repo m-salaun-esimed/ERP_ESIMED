@@ -22,6 +22,14 @@ variables:
     env:
         N_PREFIX: /app/.global
         APP_KEY: "base64:68PBtWYb5g3J0Ln8GTM+6imoVvdgpYsPFPcUqO68sas="
+        DB_CONNECTION: mysql
+        APP_DEBUG: 'true'
+        DB_HOST: null
+        DB_PORT: null
+        DB_DATABASE: null
+        DB_USERNAME: null
+        DB_PASSWORD: null
+
 
 hooks:
     build: |
