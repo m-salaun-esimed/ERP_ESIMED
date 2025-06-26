@@ -56,10 +56,6 @@ class InvoiceLinesRelationManager extends RelationManager
             ->filters([
                 //
             ])
-            ->headerActions([
-                FilamentExportHeaderAction::make('export')
-                    ->icon('heroicon-o-arrow-up-tray'),
-            ])
             ->actions([
             ]);
     }
