@@ -27,6 +27,7 @@ variables:
         APP_LOCALE: fr
         APP_FALLBACK_LOCALE: fr
         APP_FAKER_LOCALE: en_US
+        APP_NAME: "ERP_ESIMED"
         # DB_PORT: 3306
         # DB_DATABASE: "erp"
         # DB_USERNAME: "user"
