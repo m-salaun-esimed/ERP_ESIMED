@@ -14,7 +14,27 @@
     <h1>Facture #{{ $facture->invoice_number }}</h1>
 
     <p><strong>Date d’émission :</strong> {{ $facture->issue_date }}</p>
+    <p><strong>Date d'échéance :</strong> {{ $facture->due_date }}</p>
+
     <p><strong>Projet :</strong> {{ $facture->quote && $facture->quote->project ? $facture->quote->project->name : 'N/A' }}</p>
+    <table style="width: 100%; margin-top: 20px; border: none;">
+        <tr>
+            <td style="width: 50%; vertical-align: top;">
+                <strong>Émetteur :</strong><br>
+                {{ $user->name ?? 'N/A' }}<br>
+                {{ $user->address ?? 'Adresse non disponible' }}<br>
+                {{ $user->email ?? 'Email non disponible' }}<br>
+                {{ $user->phone_number ?? 'Numéro de téléphone non disponible' }}
+            </td>
+            <td style="width: 50%; text-align: right; vertical-align: top;">
+                <strong>Destinateur :</strong><br>
+                {{ $facture->quote?->project?->customer?->name ?? 'N/A' }}<br>
+                {{ $facture->quote?->project?->customer?->address ?? 'Adresse non disponible' }}<br>
+                {{ $facture->quote?->project?->customer?->email ?? 'Email non disponible' }}<br>
+                {{ $facture->quote?->project?->customer?->phone_number ?? 'Numéro de téléphone non disponible' }}
+            </td>
+        </tr>
+    </table>
 
     <table>
         <thead>
@@ -37,8 +57,23 @@
         </tbody>
     </table>
 
+    @php
+        $totalHT = $facture->total_cost;
+        $tva = $totalHT * 0.20;
+        $totalTTC = $totalHT + $tva;
+    @endphp
+
     <p style="text-align:right; margin-top: 20px;">
-        <strong>Total général : {{ number_format($facture->total_cost, 2) }} €</strong>
+        <strong>Total HT : {{ number_format($totalHT, 2) }} €</strong>
+    </p>
+    <p style="text-align:right; margin-top: 5px;">
+        <strong>TVA 20% : {{ number_format($tva, 2) }} €</strong>
+    </p>
+    <p style="text-align:right; margin-top: 5px;">
+        <strong>TOTAL TTC : {{ number_format($totalTTC, 2) }} €</strong>
+    </p>
+    <p style="text-align:right; margin-top: 20px;">
+        <strong>Règlement : {{ $facture->payment_type  }} </strong>
     </p>
 </body>
 </html>

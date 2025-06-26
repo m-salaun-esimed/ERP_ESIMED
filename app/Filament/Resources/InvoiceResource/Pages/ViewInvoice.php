@@ -23,10 +23,11 @@ class ViewInvoice extends ViewRecord
 
     public function exportPdf()
     {
-        $invoice = $this->record->load('invoiceLines', 'quote.project');
+        $invoice = $this->record->load('invoiceLines', 'quote.project', 'quote.project.customer');
 
         $pdf = Pdf::loadView('pdf.facture', [
             'facture' => $invoice,
+            'user' => auth()->user(), // 👈 ajoute l'utilisateur connecté
         ]);
 
         return response()->streamDownload(
