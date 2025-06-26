@@ -28,6 +28,7 @@ return new class extends Migration
             $table->boolean('admin')->nullable();
             $table->rememberToken()->nullable();
             $table->timestamps();
+            $table->boolean('first_login_completed')->default(false);
         });
     }
 

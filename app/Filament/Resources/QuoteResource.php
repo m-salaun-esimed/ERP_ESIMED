@@ -53,11 +53,13 @@ class QuoteResource extends Resource
                     ->required(),
 
                 DatePicker::make('created_at')
+                    ->label("Créé le")
                     ->default(now())
                     ->disabled()
                     ->dehydrated(true),
 
                 DatePicker::make('expires_on')
+                    ->label("Expire le")
                     ->default(now()->addDays(30))
                     ->required()
                     ->closeOnDateSelection(),
