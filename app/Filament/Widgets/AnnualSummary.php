@@ -5,15 +5,21 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AnnualSummary extends StatsOverviewWidget
 {
     protected function getCards(): array
     {
+
         $year = now()->year;
+        $userId = Auth::id();
 
         $invoices = Invoice::withSum('invoiceLines', 'line_total')
             ->whereYear('issue_date', $year)
+            ->whereHas('quote.project.customer', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
             ->get();
 
         $caAnnuel = $invoices->where('invoice_status_id', 3)->sum('invoice_lines_sum_line_total');
