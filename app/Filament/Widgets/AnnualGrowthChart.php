@@ -2,8 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Invoice;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
 
 class AnnualGrowthChart extends ChartWidget
 {
@@ -23,25 +23,30 @@ class AnnualGrowthChart extends ChartWidget
 
     protected function getData(): array
     {
+        $userId = auth()->id();
         $year = $this->year ?? now()->year;
 
         $monthlyRevenues = [];
 
         for ($month = 1; $month <= 12; $month++) {
-            $monthlyRevenues[] = DB::table('invoices')
-                ->join('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-                ->where('invoices.invoice_status_id', 3) // factures payées
-                ->whereYear('invoices.payment_date', $year)
-                ->whereMonth('invoices.payment_date', $month)
-                ->sum('invoice_lines.line_total');
+            $sum = Invoice::withSum('invoiceLines', 'line_total')
+                ->where('invoice_status_id', 3)
+                ->whereYear('payment_date', $year)
+                ->whereMonth('payment_date', $month)
+                ->whereHas('quote.project.customer', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                })
+                ->get()
+                ->sum('invoice_lines_sum_line_total');
+
+            $monthlyRevenues[] = $sum;
         }
 
-        // Calcul du chiffre d'affaires cumulé
         $cumulativeRevenues = [];
-        $sum = 0;
+        $total = 0;
         foreach ($monthlyRevenues as $revenue) {
-            $sum += $revenue;
-            $cumulativeRevenues[] = $sum;
+            $total += $revenue;
+            $cumulativeRevenues[] = $total;
         }
 
         $labels = [

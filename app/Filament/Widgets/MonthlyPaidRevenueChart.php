@@ -2,8 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Invoice;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\DB;
 
 class MonthlyPaidRevenueChart extends ChartWidget
 {
@@ -23,20 +23,25 @@ class MonthlyPaidRevenueChart extends ChartWidget
 
     protected function getData(): array
     {
+        $userId = auth()->id();
         $year = $this->year ?? now()->year;
 
-        // Calcul des revenus mensuels
         $revenues = [];
+
         for ($month = 1; $month <= 12; $month++) {
-            $revenues[] = DB::table('invoices')
-                ->join('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-                ->where('invoices.invoice_status_id', 3)  // factures payées
-                ->whereYear('invoices.payment_date', $year)
-                ->whereMonth('invoices.payment_date', $month)
-                ->sum('invoice_lines.line_total');
+            $sum = Invoice::withSum('invoiceLines', 'line_total')
+                ->where('invoice_status_id', 3)
+                ->whereYear('payment_date', $year)
+                ->whereMonth('payment_date', $month)
+                ->whereHas('quote.project.customer', function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                })
+                ->get()
+                ->sum('invoice_lines_sum_line_total');
+
+            $revenues[] = $sum;
         }
 
-        // Labels : noms des mois en français
         $labels = [
             'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
             'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'

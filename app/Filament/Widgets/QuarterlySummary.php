@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\Invoice;
 
 class QuarterlySummary extends Widget
 {
@@ -34,28 +35,37 @@ class QuarterlySummary extends Widget
     public function getPaidRevenue(): float
     {
         [$start, $end] = $this->getStartAndEndDates();
+        $userId = auth()->id();
 
-        return DB::table('invoices')
-            ->join('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-            ->where('invoices.invoice_status_id', 3)
-            ->whereBetween('invoices.payment_date', [$start, $end])
-            ->sum('invoice_lines.line_total');
+        return Invoice::withSum('invoiceLines', 'line_total')
+            ->where('invoice_status_id', 3)
+            ->whereBetween('payment_date', [$start, $end])
+            ->whereHas('quote.project.customer', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->get()
+            ->sum('invoice_lines_sum_line_total');
     }
 
     public function getEstimatedRevenue(): float
     {
         [$start, $end] = $this->getStartAndEndDates();
+        $userId = auth()->id();
 
-        $paidRevenue = $this->getPaidRevenue();
+        $paid = $this->getPaidRevenue();
 
-        $sentRevenue = DB::table('invoices')
-            ->join('invoice_lines', 'invoices.id', '=', 'invoice_lines.invoice_id')
-            ->where('invoices.invoice_status_id', 2)
-            ->whereBetween('invoices.due_date', [$start, $end])
-            ->sum('invoice_lines.line_total');
+        $sent = Invoice::withSum('invoiceLines', 'line_total')
+            ->where('invoice_status_id', 2)
+            ->whereBetween('due_date', [$start, $end])
+            ->whereHas('quote.project.customer', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->get()
+            ->sum('invoice_lines_sum_line_total');
 
-        return $paidRevenue + $sentRevenue;
+        return $paid + $sent;
     }
+
 
     public function getChargesToPay(): float
     {
