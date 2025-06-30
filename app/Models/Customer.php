@@ -14,6 +14,7 @@ class Customer extends Model
         'phone_number',
         'email',
         'address',
+        'city',
     ];
 
     protected static function booted()
