@@ -75,7 +75,14 @@ class QuoteResource extends Resource
                 TextColumn::make('project.name')
                     ->label('Projet'),
                 TextColumn::make('statusQuote.name')
-                    ->label('Statut'),
+                    ->label('Statut')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'envoyé' => 'gray',
+                        'en attente' => 'warning',
+                        'accepté' => 'success',
+                        'refusé' => 'danger',
+                    }),
                 TextColumn::make('created_at')
                     ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y'))
                     ->label('Date de création'),

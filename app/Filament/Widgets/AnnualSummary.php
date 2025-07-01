@@ -5,13 +5,11 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class AnnualSummary extends StatsOverviewWidget
 {
     protected function getCards(): array
     {
-
         $year = now()->year;
         $userId = Auth::id();
 
@@ -28,7 +26,7 @@ class AnnualSummary extends StatsOverviewWidget
 
         $objectifCA = Auth::user()->max_annual_revenue ?? 0;
 
-        $resteAFaire = $objectifCA - $caAnnuel;
+        $resteAFaire = max(0, $objectifCA - $caAnnuel);
 
         return [
             Card::make('Chiffre d\'affaires annuel', number_format($caAnnuel, 2, ',', ' ') . ' €'),

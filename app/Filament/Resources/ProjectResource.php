@@ -86,14 +86,12 @@ class ProjectResource extends Resource
                 TextColumn::make('statusProject.name')
                     ->label('Statut')
                     ->badge()
-                    ->colors([
-                        'gray' => 'prospect',
-                        'blue' => 'devis envoyé',
-                        'yellow' => 'devis accepté',
-                        'indigo' => 'démarré',
-                        'green' => 'terminé',
-                        'red' => 'annulé',
-                    ])
+                    ->color(fn (string $state): string => match ($state) {
+                        'prospect' => 'gray',
+                        'en cours' => 'warning',
+                        'terminé' => 'success',
+                        'annulé' => 'danger',
+                    })
                     ->searchable(),
 
                 TextColumn::make('customer.name')

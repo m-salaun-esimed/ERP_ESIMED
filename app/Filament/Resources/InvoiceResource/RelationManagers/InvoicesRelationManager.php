@@ -90,7 +90,15 @@ class InvoicesRelationManager extends RelationManager
             ->recordTitleAttribute('Factures')
             ->columns([
                 TextColumn::make('invoice_number')->label('Numéro de facture'),
-                TextColumn::make('status.name')->label('Statut')->searchable(),
+                TextColumn::make('status.name')
+                ->label('Statut')
+                ->searchable()
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'brouillon' => 'gray',
+                    'envoyée' => 'warning',
+                    'payée' => 'success',
+                }),
                 TextColumn::make('total_cost')
                     ->label('Total lignes facture (€)')
                     ->money('EUR', locale: 'fr_FR'),

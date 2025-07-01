@@ -24,4 +24,14 @@ class CreateQuote extends CreateRecord
             $this->halt();
         }
     }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->title('Devis créé')
+            ->body('Le nouveau devis a bien été enregistré.')
+            ->success()
+            ->icon('heroicon-o-document-plus');
+    }
+
 }

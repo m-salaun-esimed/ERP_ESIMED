@@ -20,16 +20,19 @@ class EditCustomer extends EditRecord
                         $this->record->delete();
 
                         Notification::make()
-                            ->title('Customer deleted')
+                            ->title('Client supprimé')
+                            ->body('Le client a été supprimé avec succès.')
                             ->success()
-                            ->send();
+                            ->icon('heroicon-o-user-minus')
+                            ->send(); // <-- manquait ici
 
                         return redirect(static::getResource()::getUrl('index'));
                     } catch (\Exception $e) {
                         Notification::make()
-                            ->title('Error during deletion')
-                            ->body('The customer cannot be deleted because there are related data linked to it.')
+                            ->title('Suppression impossible')
+                            ->body('Le client ne peut pas être supprimé car il a un ou plusieurs projets affiliés.')
                             ->danger()
+                            ->icon('heroicon-o-exclamation-circle')
                             ->send();
 
                         $this->halt();
@@ -37,6 +40,4 @@ class EditCustomer extends EditRecord
                 }),
         ];
     }
-
-
 }

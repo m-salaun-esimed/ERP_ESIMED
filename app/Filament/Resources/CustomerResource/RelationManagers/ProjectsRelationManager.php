@@ -19,6 +19,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
+
 
 class ProjectsRelationManager extends RelationManager
 {
@@ -63,14 +65,12 @@ class ProjectsRelationManager extends RelationManager
                 TextColumn::make('statusProject.name')
                     ->label('Statut')
                     ->badge()
-                    ->colors([
-                        'gray' => 'prospect',
-                        'blue' => 'devis envoyé',
-                        'yellow' => 'devis accepté',
-                        'indigo' => 'démarré',
-                        'green' => 'terminé',
-                        'red' => 'annulé',
-                    ])
+                    ->color(fn (string $state): string => match ($state) {
+                        'prospect' => 'gray',
+                        'en cours' => 'warning',
+                        'terminé' => 'success',
+                        'annulé' => 'danger',
+                    })
                     ->searchable(),
                 TextColumn::make('date_started')->label('Date de début')->date('d/m/Y à H:i'),
                 TextColumn::make('date_end')->label('Date de fin')->date('d/m/Y à H:i'),
@@ -90,7 +90,16 @@ class ProjectsRelationManager extends RelationManager
                     }),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->label('Créer')
+                Tables\Actions\CreateAction::make()
+                    ->label('Créer')
+                    ->after(function ($record) {
+                        Notification::make()
+                            ->title('Projet créé')
+                            ->body("Le projet '{$record->name}' a été créé avec succès.")
+                            ->success()
+                            ->icon('heroicon-o-folder-plus')
+                            ->send();
+        }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->label('Modifier'),

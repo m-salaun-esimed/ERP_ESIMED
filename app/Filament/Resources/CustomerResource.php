@@ -83,7 +83,9 @@ class CustomerResource extends Resource
                             $record->delete();
                             Notification::make()
                                 ->title('Client supprimé')
+                                ->body('Le client a été supprimé avec succès.')
                                 ->success()
+                                ->icon('heroicon-o-user-minus')
                                 ->send();
                         } catch (\Exception $e) {
                             Notification::make()

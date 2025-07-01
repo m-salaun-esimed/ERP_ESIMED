@@ -82,7 +82,14 @@ class QuotesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('quote_number')
                     ->label('Numéro du devis'),
                 Tables\Columns\TextColumn::make('statusQuote.name')
-                    ->label('Statut'),
+                    ->label('Statut')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'envoyé' => 'gray',
+                        'en attente' => 'warning',
+                        'accepté' => 'success',
+                        'refusé' => 'danger',
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Date de création')
                     ->formatStateUsing(fn ($state) => Carbon::parse($state)->format('d/m/Y')),

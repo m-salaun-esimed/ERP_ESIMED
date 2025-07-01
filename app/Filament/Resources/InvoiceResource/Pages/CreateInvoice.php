@@ -7,6 +7,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InvoiceLine;
+use Filament\Notifications\Notification;
 
 class CreateInvoice extends CreateRecord
 {
@@ -34,4 +35,14 @@ class CreateInvoice extends CreateRecord
             }
         }
     }
+    
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->title('Facture créée')
+            ->body('La nouvelle facture a bien été enregistrée.')
+            ->success()
+            ->icon('heroicon-o-document-plus');
+    }
+
 }

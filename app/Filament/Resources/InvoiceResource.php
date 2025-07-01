@@ -97,7 +97,14 @@ class InvoiceResource extends Resource
             ->columns([
                 TextColumn::make('invoice_number')->label('Numéro de facture')->searchable(),
                 TextColumn::make('quote.quote_number')->label('Numéro de devis')->searchable(),
-                TextColumn::make('status.name')->label('Statut')->searchable(),
+                TextColumn::make('status.name')->label('Statut')
+                    ->searchable()
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'brouillon' => 'gray',
+                        'envoyée' => 'warning',
+                        'payée' => 'success',
+                    }),
                 TextColumn::make('quote.project.name')->label('Projet')->searchable(),
                 TextColumn::make('quote.project.customer.name')->label('Client')->searchable(),
                 TextColumn::make('invoice_lines_sum_line_total')
