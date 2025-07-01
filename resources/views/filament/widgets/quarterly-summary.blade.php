@@ -1,17 +1,28 @@
 <x-filament::widget>
     <x-filament::card>
         <div class="flex justify-between items-center mb-4">
-            <x-filament::button wire:click="previousQuarter">
-                Trimestre précédent
+            {{-- Bouton trimestre précédent --}}
+            <x-filament::button wire:click="previousQuarter" class="mr-4 text-4xl" style="font-size: 2rem;">
+                &larr;
             </x-filament::button>
-            <h2 class="text-lg font-bold">
+
+            {{-- Titre du trimestre --}}
+            <h2 class="text-lg font-bold text-center">
                 T{{ $quarter }} {{ $year }} ({{ $start->format('d/m/Y') }} - {{ $end->format('d/m/Y') }})
             </h2>
-            <x-filament::button wire:click="nextQuarter">
-                Trimestre suivant
+
+            {{-- Bouton Export CSV --}}
+            <x-filament::button wire:click="exportCSV" class="mx-4">
+                Export CSV
+            </x-filament::button>
+
+            {{-- Bouton trimestre suivant --}}
+            <x-filament::button wire:click="nextQuarter" class="ml-4 text-4xl" style="font-size: 2rem;">
+                &rarr;
             </x-filament::button>
         </div>
 
+        {{-- Statistiques --}}
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <p class="font-semibold">Revenu payé :</p>
