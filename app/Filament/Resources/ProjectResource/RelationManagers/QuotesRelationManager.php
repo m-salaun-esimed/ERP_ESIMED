@@ -115,7 +115,7 @@ class QuotesRelationManager extends RelationManager
                     ->visible(fn (Quote $record) => $record->status_id != 2),
                 Tables\Actions\DeleteAction::make()
                     ->label('Supprimer')
-                    ->visible(fn (Quote $record) => $record->invoice === null),
+                    ->visible(fn (Quote $record) => $record->status_id != 2),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
