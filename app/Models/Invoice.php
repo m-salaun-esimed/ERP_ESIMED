@@ -42,6 +42,17 @@ class Invoice extends Model
         parent::boot();
 
         static::creating(function ($invoice) {
+
+        $quote = Quote::find($invoice->quote_id);
+
+        if (!$quote) {
+            throw new \Exception("La quote associée n'existe pas.");
+        }
+
+        if ($invoice->issue_date >= $quote->expire_on) {
+            throw new \Exception("La date de création de la facture doit être strictement antérieure à la date d'expiration de la quote.");
+        }
+
             $lastInvoice = self::orderBy('id', 'desc')->first();
             $nextNumber = $lastInvoice ? $lastInvoice->id + 1 : 1;
 

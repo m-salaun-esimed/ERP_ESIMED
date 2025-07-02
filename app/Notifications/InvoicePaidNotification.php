@@ -28,7 +28,7 @@ class InvoicePaidNotification extends Notification
         return (new MailMessage)
             ->subject('Facture réglée')
             ->greeting('Bonjour,')
-            ->line("La facture #{$this->invoice->id} a été marquée comme réglée.")
+            ->line("La facture {$this->invoice->invoice_number} a été marquée comme réglée.")
             ->line('Merci de votre confiance !');
     }
 }
