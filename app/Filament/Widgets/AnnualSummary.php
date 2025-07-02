@@ -21,7 +21,7 @@ class AnnualSummary extends StatsOverviewWidget
             ->get();
 
         $caAnnuel = $invoices->where('invoice_status_id', 3)->sum('invoice_lines_sum_line_total');
-        $enAttente = $invoices->where('invoice_status_id', '!=', 3)->sum('invoice_lines_sum_line_total');
+        $enAttente = $invoices->where('invoice_status_id', 2)->sum('invoice_lines_sum_line_total');
         $nonEnvoyees = $invoices->where('invoice_status_id', 1)->sum('invoice_lines_sum_line_total');
 
         $objectifCA = Auth::user()->max_annual_revenue ?? 0;
