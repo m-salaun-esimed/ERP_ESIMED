@@ -32,9 +32,9 @@ class Quote extends Model
         return $this->hasMany(QuoteLine::class);
     }
 
-    public function invoice()
+    public function invoices()
     {
-        return $this->hasOne(Invoice::class);
+        return $this->hasMany(Invoice::class);
     }
 
     public static function boot()
