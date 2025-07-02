@@ -33,6 +33,14 @@ variables:
         # DB_USERNAME: "user"
         # DB_PASSWORD: ""
         # DB_HOST: "db.internal"
+        MAIL_MAILER: smtp
+        MAIL_HOST: smtp.gmail.com
+        MAIL_PORT: 587
+        MAIL_USERNAME: matthieusalaun30@gmail.com
+        MAIL_PASSWORD: hpbhfsuyyhvosvhk
+        MAIL_ENCRYPTION: tls
+        MAIL_FROM_ADDRESS: matthieusalaun30@gmail.com
+        MAIL_FROM_NAME: "${APP_NAME}"
 
 hooks:
     build: |
