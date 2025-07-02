@@ -121,6 +121,10 @@ workers:
     # set the worker's disk to the minimum amount
     disk: 256
 
+crons:
+    send-overdue-invoices:
+        spec: "0 8 * * *"
+        cmd: "php artisan invoices:send-overdue"
 
 
 source:
