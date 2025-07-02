@@ -187,6 +187,22 @@ class InvoiceResource extends Resource
                     ->url(fn ($record) => ViewInvoice::getUrl(['record' => $record->getKey()])),
                 Tables\Actions\EditAction::make()
                     ->visible(fn (Invoice $record) => $record->invoice_status_id != 3),
+                Tables\Actions\Action::make('Relancer')
+                    ->label('Relancer par mail')
+                    ->icon('heroicon-o-envelope')
+                    ->color('danger')
+                    ->visible(fn (Invoice $record) =>
+                        $record->due_date < now() && $record->invoice_status_id != 3 && $record->invoice_status_id != 1
+                    )
+                    ->action(function (Invoice $record) {
+                        \Mail::to($record->quote->project->customer->email)->send(new \App\Mail\InvoiceReminderMail($record));
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Mail envoyé')
+                            ->body('Une relance a été envoyée à ' . $record->quote->project->customer->email)
+                            ->success()
+                            ->send();
+                    })
             ])
             ->bulkActions([]);
     }
