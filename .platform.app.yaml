@@ -40,7 +40,7 @@ variables:
         MAIL_PASSWORD: hpbhfsuyyhvosvhk
         MAIL_ENCRYPTION: tls
         MAIL_FROM_ADDRESS: matthieusalaun30@gmail.com
-        MAIL_FROM_NAME: "${APP_NAME}"
+        MAIL_FROM_NAME: "ERP_ESIMED"
 
 hooks:
     build: |

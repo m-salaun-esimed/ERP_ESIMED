@@ -45,6 +45,7 @@ class InvoiceResource extends Resource
                     ->label('Statut de la facture')
                     ->options(InvoiceStatus::all()->pluck('name', 'id'))
                     ->required()
+                    ->reactive() // rend le champ "reactif" pour déclencher les effets dynamiques
                     ->afterStateUpdated(function ($state, callable $set) {
                         if ($state == 3) {
                             Notification::make()
@@ -82,11 +83,11 @@ class InvoiceResource extends Resource
                 DatePicker::make('due_date')
                     ->label('Date d\'échéance')
                     ->required(),
-
                 DatePicker::make('payment_date')
                     ->label('Date de paiement')
-                    ->requiredIf('invoice_status_id', 3)
-                    ->visible(fn (Forms\Get $get) => $get('invoice_status_id') == 3)
+                    ->requiredIf('invoice_status_id', 3) // validation obligatoire si statut = 3
+                    ->disabled(fn ($get) => $get('invoice_status_id') != 3) // grisé sauf si statut = 3
+
         ]);
     }
 

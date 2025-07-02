@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\InvoiceResource\Pages;
 
 use App\Filament\Resources\InvoiceResource;
+use App\Models\Invoice; // Import du modèle Eloquent Invoice
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
@@ -10,6 +11,8 @@ use Filament\Notifications\Notification;
 class EditInvoice extends EditRecord
 {
     protected static string $resource = InvoiceResource::class;
+
+    protected Invoice $oldRecord;
 
     protected function getHeaderActions(): array
     {
@@ -54,5 +57,27 @@ class EditInvoice extends EditRecord
         }
 
         return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $this->oldRecord = $this->getRecord()->replicate();
+
+        return $data;
+    }
+    
+    protected function afterSave(): void
+    {
+        $newStatus = (int) $this->record->invoice_status_id;
+        $oldStatus = (int) $this->oldRecord->invoice_status_id;
+
+        if ($newStatus === 3 && $oldStatus !== 3) {
+            $recipient = $this->record->quote->project->customer->email ?? null;
+
+            if ($recipient) {
+                \Notification::route('mail', $recipient)
+                    ->notify(new \App\Notifications\InvoicePaidNotification($this->record));
+            }
+        }
     }
 }
