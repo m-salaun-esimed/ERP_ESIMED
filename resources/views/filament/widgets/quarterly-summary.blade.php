@@ -11,11 +11,6 @@
                 T{{ $quarter }} {{ $year }} ({{ $start->format('d/m/Y') }} - {{ $end->format('d/m/Y') }})
             </h2>
 
-            {{-- Bouton Export CSV --}}
-            <x-filament::button wire:click="exportCSV" class="mx-4">
-                Export CSV
-            </x-filament::button>
-
             {{-- Bouton trimestre suivant --}}
             <x-filament::button wire:click="nextQuarter" class="ml-4 text-4xl" style="font-size: 2rem;">
                 &rarr;
