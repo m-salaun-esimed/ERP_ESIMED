@@ -49,7 +49,7 @@ class Invoice extends Model
             throw new \Exception("La quote associée n'existe pas.");
         }
 
-        if ($invoice->issue_date >= $quote->expire_on) {
+        if ($invoice->issue_date <= $quote->expire_on) {
             throw new \Exception("La date de création de la facture doit être strictement antérieure à la date d'expiration de la quote.");
         }
 

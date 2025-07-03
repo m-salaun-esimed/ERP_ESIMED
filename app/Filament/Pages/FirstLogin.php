@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Pages;
 
 use Filament\Forms;
@@ -7,7 +8,9 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
-use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 
 class FirstLogin extends Page implements HasForms
 {
@@ -20,7 +23,11 @@ class FirstLogin extends Page implements HasForms
     protected static ?string $navigationGroup = null;
 
     public $phone_number;
-    public $address;
+    public $street;
+    public $postal_code;
+    public $city;
+    public $region;
+    public $country;
     public $max_annual_revenue;
     public $charge_rate;
 
@@ -28,7 +35,7 @@ class FirstLogin extends Page implements HasForms
     {
         return false;
     }
-    
+
     public function mount(): void
     {
         $user = Auth::user();
@@ -39,7 +46,11 @@ class FirstLogin extends Page implements HasForms
 
         $this->form->fill([
             'phone_number' => $user->phone_number,
-            'address' => $user->address,
+            'street' => $user->street,
+            'postal_code' => $user->postal_code,
+            'city' => $user->city,
+            'region' => $user->region,
+            'country' => $user->country,
             'max_annual_revenue' => $user->max_annual_revenue,
             'charge_rate' => $user->charge_rate,
         ]);
@@ -48,23 +59,41 @@ class FirstLogin extends Page implements HasForms
     protected function getFormSchema(): array
     {
         return [
-            Forms\Components\TextInput::make('phone_number')
+            TextInput::make('phone_number')
                 ->label('Numéro de téléphone')
                 ->tel()
                 ->required()
                 ->maxLength(20),
 
-            Forms\Components\Textarea::make('address')
-                ->label('Adresse')
-                ->required()
-                ->rows(3),
+            Grid::make(2)->schema([
+                Textarea::make('street')
+                    ->label('Rue, numéro')
+                    ->required()
+                    ->rows(3),
 
-            Forms\Components\TextInput::make('max_annual_revenue')
+                TextInput::make('postal_code')
+                    ->label('Code postal')
+                    ->required(),
+
+                TextInput::make('city')
+                    ->label('Ville')
+                    ->required(),
+
+                TextInput::make('region')
+                    ->label('Région')
+                    ->required(),
+
+                TextInput::make('country')
+                    ->label('Pays')
+                    ->required(),
+            ]),
+
+            TextInput::make('max_annual_revenue')
                 ->label('Revenu annuel maximal')
                 ->numeric()
                 ->required(),
 
-            Forms\Components\TextInput::make('charge_rate')
+            TextInput::make('charge_rate')
                 ->label('Taux de charges en %')
                 ->numeric()
                 ->required(),
@@ -86,7 +115,11 @@ class FirstLogin extends Page implements HasForms
         $user = Auth::user();
 
         $user->phone_number = $data['phone_number'];
-        $user->address = $data['address'];
+        $user->street = $data['street'];
+        $user->postal_code = $data['postal_code'];
+        $user->city = $data['city'];
+        $user->region = $data['region'];
+        $user->country = $data['country'];
         $user->max_annual_revenue = $data['max_annual_revenue'];
         $user->charge_rate = $data['charge_rate'];
         $user->first_login_completed = true;

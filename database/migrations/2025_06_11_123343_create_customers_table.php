@@ -17,10 +17,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('contact_name')->nullable();
             $table->string('first_name')->nullable();
-            $table->string('address')->nullable();
+            $table->string('street')->nullable();          // Rue, numéro, etc.
+            $table->string('postal_code')->nullable();     // Code postal
+            $table->string('city')->nullable();            // Ville
+            $table->string('region')->nullable();          // Région, département (si utile)
+            $table->string('country')->nullable();         // Pays
             $table->string('phone_number')->nullable();
             $table->string('email')->nullable();
-            $table->string('city')->nullable();
             $table->timestamps();
         });
     }

@@ -15,6 +15,11 @@ class Customer extends Model
         'email',
         'address',
         'city',
+        'street',
+        'country',
+        'city',
+        'postal_code',
+        'region'
     ];
 
     protected static function booted()

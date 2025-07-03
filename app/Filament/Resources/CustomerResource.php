@@ -40,8 +40,17 @@ class CustomerResource extends Resource
                 TextInput::make('contact_name')
                     ->label('Nom du contact')
                     ->required(),
-                TextInput::make('address')
-                    ->label('Adresse')
+                TextInput::make('street')
+                    ->label('Rue et numéro')
+                    ->required(),
+                TextInput::make('postal_code')
+                    ->label('Code postal')
+                    ->required(),
+                TextInput::make('city')
+                    ->label('Ville')
+                    ->required(),
+                TextInput::make('country')
+                    ->label('Pays')
                     ->required(),
                 TextInput::make('phone_number')
                     ->label('Numéro de téléphone')
@@ -51,9 +60,6 @@ class CustomerResource extends Resource
                 TextInput::make('email')
                     ->label('Email')
                     ->email()
-                    ->required(),
-                TextInput::make('city')
-                    ->label('Ville')
                     ->required(),
             ]);
     }
@@ -66,7 +72,12 @@ class CustomerResource extends Resource
                 TextColumn::make('contact_name')->label('Nom du contact')->searchable(),
                 TextColumn::make('phone_number')->label('Téléphone')->searchable(),
                 TextColumn::make('email')->label('Email')->searchable(),
-                TextColumn::make('address')->label('Adresse')->searchable(),
+                TextColumn::make('full_address')
+                    ->label('Adresse')
+                    ->getStateUsing(function ($record) {
+                        return "{$record->street}, {$record->postal_code} {$record->city}, {$record->country}";
+                    })
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('View')

@@ -25,17 +25,37 @@
             <td style="width: 50%; vertical-align: top;">
                 <strong>Émetteur :</strong><br>
                 {{ $user->name ?? 'N/A' }}<br>
-                {{ $user->address ?? 'Adresse non disponible' }}<br>
+                @php
+                    $addressLine = trim(
+                        implode(', ', array_filter([
+                            $user->street ?? null,
+                            ($user->postal_code ?? '') . ' ' . ($user->city ?? ''),
+                            $user->country ?? null
+                        ]))
+                    );
+                @endphp
+                {{ $addressLine ?: 'Adresse non disponible' }}<br>
                 {{ $user->email ?? 'Email non disponible' }}<br>
                 {{ $user->phone_number ?? 'Numéro non disponible' }}
             </td>
             <td style="width: 50%; text-align: right; vertical-align: top;">
                 <strong>Destinataire :</strong><br>
-                {{ $facture->quote?->project?->customer?->name ?? 'N/A' }}<br>
-                {{ $facture->quote?->project?->customer?->address ?? 'Adresse non disponible' }}<br>
-                {{ $facture->quote?->project?->customer?->email ?? 'Email non disponible' }}<br>
-                {{ $facture->quote?->project?->customer?->phone_number ?? 'Numéro non disponible' }}
+                @php
+                    $customer = $facture->quote?->project?->customer;
+                    $customerAddressLine = trim(
+                        implode(', ', array_filter([
+                            $customer?->street ?? null,
+                            ($customer?->postal_code ?? '') . ' ' . ($customer?->city ?? ''),
+                            $customer?->country ?? null
+                        ]))
+                    );
+                @endphp
+                {{ $customer?->name ?? 'N/A' }}<br>
+                {{ $customerAddressLine ?: 'Adresse non disponible' }}<br>
+                {{ $customer?->email ?? 'Email non disponible' }}<br>
+                {{ $customer?->phone_number ?? 'Numéro non disponible' }}
             </td>
+
         </tr>
     </table>
 

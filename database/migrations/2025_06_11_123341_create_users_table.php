@@ -23,7 +23,11 @@ return new class extends Migration
             $table->bigInteger('max_annual_revenue')->nullable();
             $table->string('password');
             $table->string('token')->nullable();
-            $table->string('address')->nullable();
+            $table->string('street')->nullable();          // Rue, numéro, etc.
+            $table->string('postal_code')->nullable();     // Code postal
+            $table->string('city')->nullable();            // Ville
+            $table->string('region')->nullable();          // Région, département (si utile)
+            $table->string('country')->nullable();         // Pays
             $table->bigInteger('charge_rate')->nullable();
             $table->boolean('admin')->nullable();
             $table->rememberToken()->nullable();
